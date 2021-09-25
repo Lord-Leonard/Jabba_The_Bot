@@ -12,18 +12,18 @@ class QueueCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='list-queue')
-    async def list_queue(self, ctx):
+    @commands.command(name='queue')
+    async def queue(self, ctx, url=''):
+
+        if url:
+            song_object = create_song_object(ctx, url)
+            download_file(url)
+            move_song(song_object, directory_queued)
+
+            add_song_to_queue(song_object)
+
         for song in Queue.song_queue:
             print(song)
-
-    @commands.command(name='queue')
-    async def queue(self, ctx, url):
-        song_object = create_song_object(ctx, url)
-        download_file(url)
-        move_song(song_object, directory_queued)
-
-        add_song_to_queue(song_object)
 
 
 def setup(bot):
