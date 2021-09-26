@@ -1,0 +1,8 @@
+*.mp3
+.idea
+queued/*
+playing/*
+config.ini
+config.txt
+.gitignore
+cogs/testCommand.py

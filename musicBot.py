@@ -1,7 +1,16 @@
 import traceback
+import configparser
 
 from discord.ext import commands
 
+###################################################################
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+discord_token = config['discord']['Token']
+
+
+###################################################################
 
 class MusicBot(commands.Bot):
     inital_extensions = ['cogs.botCommands',
@@ -26,4 +35,4 @@ if __name__ == '__main__':
         except Exception as e:
             traceback.print_exc()
 
-client.run('ODkwODM1NjQyNTEzMjQ4MjY2.YU1lWA.iXKcBoCGLc9VU9P70y01yVofEBk')
+client.run(discord_token)
