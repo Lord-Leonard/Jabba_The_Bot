@@ -1,22 +1,22 @@
-import traceback
 import configparser
+import traceback
 
 from discord.ext import commands
 
-###################################################################
+##########################################################################################
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 discord_token = config['discord']['Token']
 
-
-###################################################################
+##########################################################################################
 
 class MusicBot(commands.Bot):
     inital_extensions = ['cogs.botCommands',
                          'cogs.musicCommands',
                          'cogs.queueCommands',
-                         'cogs.testCommand']
+                         'cogs.testCommand',
+                         'cogs.helpCommand']
 
     async def on_ready(self):
         print(f'Logged in as {self.user}')

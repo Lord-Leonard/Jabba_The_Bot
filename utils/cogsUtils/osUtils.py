@@ -1,12 +1,9 @@
 import os
 
-import discord
 import youtube_dl
 
-from song_queue import Queue
-from song import Song
+##########################################################################################
 
-########################################################################################################################
 
 ydl_opts = {
     'format': 'bestaudio/best',
@@ -18,8 +15,10 @@ ydl_opts = {
     }]
 }
 
+directory_songs = 'songs/'
 
-########################################################################################################################
+
+##########################################################################################
 
 def delete_song(ctx, file_location):
     try:
@@ -43,19 +42,12 @@ def download_file(url):
         print('Download done')
 
 
-def move_song(so, directory):
+def move_download_to_songs(so):
+    file_destination = directory_songs + so.title + '.mp3'
 
-    song_name = so.title
-    song_location = so.file_name
-    song_destination = directory + '/' + song_name
-
-    move_mp3_file(song_destination)
-
-    so.file_location = song_destination
-
-
-def move_mp3_file(file_destination):
     for file in os.listdir('./'):
         if file.endswith('.mp3'):
             os.rename(file, file_destination)
             print(f'Renamed File: {file}\n')
+
+    so.file_location = file_destination

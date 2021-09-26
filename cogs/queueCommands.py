@@ -1,11 +1,14 @@
 from discord.ext import commands
-from utils.cogsUtils.musicUtils import *
-from song_queue import *
-from utils.cogsUtils.osUtils import *
-from utils.cogsUtils.musicUtils import *
 
-directory_queued = 'queued/'
-directory_playing = 'playing/'
+from utils.cogsUtils.musicUtils import get_song
+from utils.cogsUtils.queueUtils import clear_queue
+from utils.song_queue import song_queue
+
+
+##########################################################################################
+
+
+##########################################################################################
 
 
 class QueueCommands(commands.Cog):
@@ -16,14 +19,14 @@ class QueueCommands(commands.Cog):
     async def queue(self, ctx, url=''):
 
         if url:
-            song_object = create_song_object(ctx, url)
-            download_file(url)
-            move_song(song_object, directory_queued)
+            get_song(ctx, url)
 
-            add_song_to_queue(song_object)
-
-        for song in Queue.song_queue:
+        for song in song_queue:
             print(song)
+
+    @commands.command(name='clear queue')
+    async def clear_queue(self, ctx):
+        clear_queue()
 
 
 def setup(bot):

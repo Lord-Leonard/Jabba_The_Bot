@@ -1,6 +1,3 @@
-from song_queue import Queue
-
-
 class Song:
     def __init__(self, url, t, dur):
         self.url = url
@@ -13,10 +10,4 @@ class Song:
         return 'Title: ' + self.title + \
                ', Duration: ' + str(self.duration) + \
                ', Dateiname: ' + self.file_name + \
-               ', ' \
-               + self.url
-
-    # url = ''
-    # title = ''
-    # duration = 0
-    # filename = ''
+               ', Url: ' + self.url
