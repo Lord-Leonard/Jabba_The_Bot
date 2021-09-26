@@ -7,11 +7,9 @@ import youtube_dl
 
 ydl_opts = {
     'format': 'bestaudio/best',
-    'default_search': 'auto',
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
-        'preferredquality': '192'
     }]
 }
 
@@ -37,7 +35,7 @@ def clear_directory(direct):
 def download_file(url):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl._ies = [ydl.get_info_extractor('Youtube')]
-        print('Downloading audio now\n')
+        print('Downloading audio now')
         ydl.download([url])
         print('Download done')
 

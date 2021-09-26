@@ -22,9 +22,13 @@ def get_song(ctx, url):
         add_song_to_queue(song_object)
     else:
         song_object = create_song_object(ctx, url)
+        print('songobject created')
         download_file(url)
+        print('file downloaded')
         add_song_to_song_list(song_object)
+        print('song added to songlist')
         add_song_to_queue(song_object)
+        print('song added to queue')
 
 
 def get_song_info(ctx, url):

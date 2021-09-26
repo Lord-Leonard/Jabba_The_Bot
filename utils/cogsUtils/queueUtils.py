@@ -13,7 +13,6 @@ directory_queued = 'queued/'
 def add_song_to_queue(so):
     song_queue.append(so)
     move_download_to_songs(so)
-    print(f'Song added to queue')
 
 
 def add_song_to_song_list(so):
