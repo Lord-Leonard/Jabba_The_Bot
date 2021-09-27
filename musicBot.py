@@ -2,12 +2,15 @@ import configparser
 import traceback
 
 from discord.ext import commands
+from utils.cogsUtils.musicUtils import load_song_list
 
 ##########################################################################################
+import utils.song_queue
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 discord_token = config['discord']['Token']
+
 
 ##########################################################################################
 
@@ -20,6 +23,7 @@ class MusicBot(commands.Bot):
 
     async def on_ready(self):
         print(f'Logged in as {self.user}')
+        load_song_list()
 
     async def on_message(self, message):
         print(f'Message from {message.author}: {message.content}')
