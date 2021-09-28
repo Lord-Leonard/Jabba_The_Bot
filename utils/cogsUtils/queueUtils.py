@@ -1,6 +1,8 @@
+import csv
 import json
 
 from utils.cogsUtils.osUtils import move_download_to_songs
+from utils.db_Utils import add_song_to_table
 from utils.song_queue import song_queue, song_list
 
 ##########################################################################################
@@ -14,19 +16,9 @@ directory_queued = 'queued/'
 
 def add_song_to_queue(so):
     song_queue.append(so)
+    print('song added to queue')
     move_download_to_songs(so)
-
-
-def get_song_json_string(so):
-    song_list_string = {'song': []}
-    song_list_string['song'].append({
-        'url': so.url,
-        'title': so.title,
-        'duration': so.duration,
-        'file name': so.file_name,
-        'file location': so.file_location
-    })
-    return song_list_string
+    print('song moved to \"songs\"')
 
 
 def add_song_to_runtime_song_list(so):
@@ -35,14 +27,8 @@ def add_song_to_runtime_song_list(so):
 
 
 def add_song_to_project_song_list(so):
-    song_data = get_song_json_string(so)
+    add_song_to_table(so)
 
-    with open('song_list.json', 'w', encoding='utf-8') as f:
-
-        data = json.load(f)
-        data.append(song_data)
-        f.seek(0)
-        json.dump(song_data, f, indent=5)
     print('song added to project songlist')
 
 

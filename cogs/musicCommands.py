@@ -1,5 +1,3 @@
-import time
-
 from cogs.botCommands import *
 
 from utils.cogsUtils.musicUtils import *
@@ -26,7 +24,6 @@ class PlayCommand(commands.Cog):
         if not music_is_playing(voice_client):
             if queue_is_empty():
                 get_song(ctx, url)
-                time.sleep(1)
                 play_song(ctx, voice_client)
 
             elif music_is_paused(voice_client):

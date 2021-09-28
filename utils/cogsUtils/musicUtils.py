@@ -1,3 +1,4 @@
+import csv
 import json
 
 import discord
@@ -10,6 +11,7 @@ from utils.cogsUtils.queueUtils import add_song_to_queue, add_song_to_runtime_so
     song_is_on_list, get_song_object_from_list, add_song_to_project_song_list
 
 ##########################################################################################
+from utils.db_Utils import get_song_list
 
 directory_played = 'played/'
 directory_playing = 'playing/'
@@ -18,16 +20,24 @@ directory_playing = 'playing/'
 ##########################################################################################
 
 def load_song_list():
-    print(f'test')
-    with open('song_list.json') as f:
-        data = json.load(f)
-        for song in data['song']:
-            song_object = create_song_object(song['url'])
-            add_song_to_runtime_song_list(song_object)
+    count = 0
+    song_list = get_song_list()
+
+    for song in song_list:
+        song_object = Song(
+            song[0],
+            song[1],
+            song[2],
+            song[3],
+            song[4]
+        )
+        add_song_to_runtime_song_list(song_object)
+        count += 1
+
+    print(f'Es wurden {count} Songs geladen')
 
 
 def get_song(ctx, url):
-
     if song_is_on_list(url):
         song_object = get_song_object_from_list(url)
         add_song_to_queue(song_object)
@@ -36,11 +46,11 @@ def get_song(ctx, url):
         print('songobject created')
         download_file(url)
         print('file downloaded')
-        add_song_to_runtime_song_list(song_object)
-        add_song_to_project_song_list(song_object)
 
         add_song_to_queue(song_object)
-        print('song added to queue')
+
+        add_song_to_runtime_song_list(song_object)
+        add_song_to_project_song_list(song_object)
 
 
 def get_song_info(url):
@@ -48,9 +58,12 @@ def get_song_info(url):
         return ydl.extract_info(url, download=False)
 
 
-def create_song_object(url):
-    song_info = get_song_info(url)
-    return Song(url, song_info['title'], song_info['duration'])
+def create_song_object(url, title='', duration='', file_name='', file_location=''):
+    if title and duration and file_name and file_location:
+        return Song(url, title, duration, file_name, file_location)
+    else:
+        song_info = get_song_info(url)
+        return Song(url, song_info['title'], song_info['duration'])
 
 
 def play_song(ctx, vc):
