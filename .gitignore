@@ -15,8 +15,6 @@ venv
 
 #config Datei
 config.ini
-config.txt
 
-#Testcommand
-cogs/testCommand.py
-
+#songs Ordner
+songs/*
