@@ -214,7 +214,7 @@ class Music(commands.Cog):
         vc = ctx.voice_client
 
         if not vc or not vc.is_connected():
-            return await ctx.sned(f'Ich nix spielen Musik')
+            return await ctx.send(f'Ich nix spielen Musik')
 
         await self.cleanup(ctx.guild)
 
