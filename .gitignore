@@ -18,3 +18,5 @@ config.ini
 
 #songs Ordner
 songs/*
+test.py
+client_secret_264487813500-jhig0d6kt725opreqh9oqum3adqmriln.apps.googleusercontent.com.json

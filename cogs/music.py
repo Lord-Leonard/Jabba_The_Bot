@@ -1,3 +1,5 @@
+import logging
+
 import discord
 
 import asyncio
@@ -8,6 +10,7 @@ import traceback
 from utils.MusicPlayer import MusicPlayer
 from utils.YTDLSource import YTDLSource
 from utils.CustomExceptions import *
+from utils.YoutubeApi import *
 
 ##########################################################################################
 
@@ -45,7 +48,7 @@ class Music(commands.Cog):
     async def __error(self, ctx, error):
         if isinstance(error, commands.NoPrivateMessage):
             try:
-                return await ctx.send('Nix gehen in privat')
+                return await ctx.send('Nix gehen in privat', delete_after=10)
             except discord.HTTPException:
                 pass
         elif isinstance(error, InvalidVoiceChannel):
@@ -65,6 +68,13 @@ class Music(commands.Cog):
         return player
 
     ##########################################################################################
+
+    @commands.command(name='testcommand')
+    async def test(self, ctx, search):
+        source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
+
+        relatedVideoUrlList = getRelatedVideoUrlList(source, 3)
+        await ctx.send(f'die nächsten Videos sind: {relatedVideoUrlList}')
 
     @commands.command(name='connect', aliases=['join', 'komm ran'])
     async def connect_(self, ctx, *, channel: discord.VoiceChannel = None):
@@ -93,7 +103,7 @@ class Music(commands.Cog):
             await ctx.send(f'Verbindung zu **{channel}** erfolgreich aufgebaut', delete_after=20)
 
     @commands.command(name='play', aliases=['sing', 'mach', 'spiel'])
-    async def play_(self, ctx, *, search: str):
+    async def play_(self, ctx, *, search):
         await ctx.trigger_typing()
         vc = ctx.voice_client
 
@@ -107,6 +117,27 @@ class Music(commands.Cog):
         source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
 
         await player.queue.put(source)
+
+    @commands.command(name='autoplay')
+    async def auto_play_(self, ctx, *, search=''):
+        await ctx.trigger_typing()
+        vc = ctx.voice_client
+
+        if not vc:
+            await ctx.invoke(self.connect_)
+        elif not vc.is_playing():
+            return await ctx.send('Modus wurde zu autoplay geändert')
+
+        player = self.get_player(ctx)
+
+        if player.autoplay:
+            player.autoplay = False
+
+        player.autoplay = True
+
+        if search:
+            source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
+            await player.queue.put(source)
 
     @commands.command(name='pause')
     async def pause_(self, ctx):
@@ -135,6 +166,7 @@ class Music(commands.Cog):
     @commands.command(name='skip')
     async def skip_(self, ctx):
         vc = ctx.voice_client
+        player = self.get_player(ctx)
 
         if not vc or not vc.is_connected():
             return await ctx.send(f'Gibt nix zum skippen.', delete_after=20)
@@ -144,32 +176,38 @@ class Music(commands.Cog):
         elif not vc.is_playing():
             return await ctx.send(f'Wat soll ich skippen?!')
 
+        player.queue.task_done()
         vc.stop()
         await ctx.send(f'**`{ctx.author}`** hat das musikalische Meisterwerk geskippt!')
 
     @commands.command(name='queue', aliases=['q', 'playlist', 'warteschlange', 'que'])
-    async def queue_info(self, ctx, search=''):
+    async def queue_info(self, ctx, *, search=''):
         vc = ctx.voice_client
+        player = self.get_player(ctx)
+        upcomming = list(itertools.islice(player.queue._queue, 0, 5))
 
         if not vc or not vc.is_connected():
             return await ctx.send(f'Ich nix connected', delete_after=20)
 
-        player = self.get_player(ctx)
-
-        if not search:
+        if search:
             source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
             await player.queue.put(source)
-            return await ctx.send(f'`{source.title}` wurde von `{ctx.author}``in die queue gepackt.')
+            return await ctx.send(source["title"])
 
         if player.queue.empty():
-            return await ctx.send('q, welche q?')
+            if player.autoplay:
+                relatedVideoUrlList = getRelatedVideoUrlList(player.current, 3)
+                relatedVideoInfo = await YTDLSource.get_video_info_list(relatedVideoUrlList)
+                relatedVideoTitle = relatedVideoInfo[0]['title']
 
-        upcomming = list(itertools.islice(player.queue._queue, 0, 5))
+                return await ctx.send(f'Der nächste song ist wird: ```ini\n{relatedVideoTitle}```')
+            return await ctx.send(f'q, welche q?!')
 
-        fmt = '\n'.join(f'**``{_["title"]}`**' for _ in upcomming)
-        embed = discord.Embed(title=f'Upcommming - Next{len(upcomming)}', description=fmt)
+        fmt = '\n'.join(f'```{_["title"]}```' for _ in upcomming)
+        await ctx.send(fmt)
 
-        await ctx.send(embed=embed)
+        # embed = discord.Embed(title=f'Meiserwerke in der Warteschlange: {len(upcomming)}', description=fmt)
+        # await ctx.send(embed=embed)
 
     @commands.command(name='now_playing', aliases=['np', 'current', 'currentsong', 'playing'])
     async def now_playing_(self, ctx):
@@ -212,9 +250,13 @@ class Music(commands.Cog):
     @commands.command(name='stop', aliases=['quit'])
     async def stop_(self, ctx):
         vc = ctx.voice_client
+        player = self.get_player(ctx)
 
         if not vc or not vc.is_connected():
             return await ctx.send(f'Ich nix spielen Musik')
+
+        if player.autoplay:
+            player.autoplay = False
 
         await self.cleanup(ctx.guild)
 

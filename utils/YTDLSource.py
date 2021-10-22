@@ -2,7 +2,7 @@ import asyncio
 from functools import partial
 
 import discord
-from youtube_dl import YoutubeDL
+from youtube_dl import YoutubeDL, DownloadError
 
 ##########################################################################################
 
@@ -50,8 +50,6 @@ class YTDLSource(discord.PCMVolumeTransformer):
         if 'entries' in data:
             data = data['entries'][0]
 
-        await ctx.send(f'```ini\n[Added {data["title"]} to the Queue.]\n```', delete_after=15)
-
         if download:
             source = ytdl.prepare_filename(data)
         else:
@@ -68,3 +66,17 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
 
         return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
+
+    @classmethod
+    async def get_video_info_list(cls, urllist):
+        videoData = []
+        data = []
+        for url in urllist:
+            try:
+                videoData = ytdl.extract_info(url, download=False)
+            except DownloadError:
+                pass
+            if videoData:
+                data.append(videoData)
+
+        return data

@@ -1,17 +1,22 @@
 import asyncio
+import queue
 
 import discord
 from async_timeout import timeout
+from youtube_dl import DownloadError
 
 from utils.YTDLSource import YTDLSource
+from utils.YoutubeApi import *
 
 
 ##########################################################################################
 
 class MusicPlayer:
-    __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume')
+    __slots__ = (
+    'bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume', 'autoplay', 'ctx', 'history')
 
     def __init__(self, ctx):
+        self.ctx = ctx
         self.bot = ctx.bot
         self._guild = ctx.guild
         self._channel = ctx.channel
@@ -23,6 +28,8 @@ class MusicPlayer:
         self.np = None
         self.volume = .5
         self.current = None
+        self.autoplay = False
+        self.history = []
 
         ctx.bot.loop.create_task(self.player_loop())
 
@@ -53,6 +60,31 @@ class MusicPlayer:
                 self.np = await self._channel.send(f'**Now Playing:** `{source.title}` requested by '
                                                    f'`{source.requester}`')
                 await self.next.wait()
+
+                if queue.Empty:
+                    if self.autoplay:
+                        relatedVideoUrlList = getRelatedVideoUrlList(source, 3)
+                        Success = False
+                        relatedSource = ''
+
+                        i = 0
+                        while not Success:
+                            try:
+                                Success = True
+                                relatedSource = await YTDLSource.create_source(self.ctx, relatedVideoUrlList[i],
+                                                                               loop=self.bot.loop,
+                                                                               download=False)
+
+                                for Video in self.history:
+                                    if relatedSource == Video:
+                                        Success = False
+                            except DownloadError:
+                                Success = False
+                                i += 1
+
+                        if relatedSource:
+                            await self.queue.put(relatedSource)
+                            self.history.append(relatedSource)
 
                 source.cleanup()
                 self.current = None
