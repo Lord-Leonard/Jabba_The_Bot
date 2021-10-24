@@ -120,7 +120,6 @@ class Music(commands.Cog):
         if vc.is_playing():
             vc.stop()
 
-
     @commands.command(name='autoplay')
     async def auto_play_(self, ctx, *, search=''):
         await ctx.trigger_typing()

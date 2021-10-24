@@ -6,8 +6,11 @@
 
 import os
 
+import configparser
 import googleapiclient.discovery
 
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 def getSourceVideoID(source):
     url = source.web_url
@@ -22,8 +25,7 @@ def getRelatedVideoData(currentvideoid, amount):
 
     api_service_name = "youtube"
     api_version = "v3"
-    DEVELOPER_KEY = "AIzaSyBmcyHnoniLJx96ThX5FqZmDurcdOnyYcc"
-    # DEVELOPER_KEY = "AIzaSyBuCrm94Tc2AS8FXbAQzqdmEw2XQ50EAHc"
+    DEVELOPER_KEY = config['Youtube']['ApiKey1']
 
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey=DEVELOPER_KEY)
