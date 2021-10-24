@@ -117,6 +117,9 @@ class Music(commands.Cog):
         source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
 
         await player.queue.put(source)
+        if vc.is_playing():
+            vc.stop()
+
 
     @commands.command(name='autoplay')
     async def auto_play_(self, ctx, *, search=''):
@@ -166,7 +169,6 @@ class Music(commands.Cog):
     @commands.command(name='skip')
     async def skip_(self, ctx):
         vc = ctx.voice_client
-        player = self.get_player(ctx)
 
         if not vc or not vc.is_connected():
             return await ctx.send(f'Gibt nix zum skippen.', delete_after=20)
@@ -176,7 +178,6 @@ class Music(commands.Cog):
         elif not vc.is_playing():
             return await ctx.send(f'Wat soll ich skippen?!')
 
-        player.queue.task_done()
         vc.stop()
         await ctx.send(f'**`{ctx.author}`** hat das musikalische Meisterwerk geskippt!')
 

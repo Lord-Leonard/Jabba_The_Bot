@@ -13,7 +13,7 @@ from utils.YoutubeApi import *
 
 class MusicPlayer:
     __slots__ = (
-    'bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume', 'autoplay', 'ctx', 'history')
+        'bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume', 'autoplay', 'ctx', 'history', 'skip')
 
     def __init__(self, ctx):
         self.ctx = ctx
@@ -29,6 +29,7 @@ class MusicPlayer:
         self.volume = .5
         self.current = None
         self.autoplay = False
+        self.skip = False
         self.history = []
 
         ctx.bot.loop.create_task(self.player_loop())
@@ -55,13 +56,15 @@ class MusicPlayer:
 
                 source.volume = self.volume
                 self.current = source
+                self.history.append(source.title)
 
-                self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                self._guild.voice_client.play(source, after=lambda _: print(self.bot.loop.call_soon_threadsafe(self.next.set)))
                 self.np = await self._channel.send(f'**Now Playing:** `{source.title}` requested by '
                                                    f'`{source.requester}`')
-                await self.next.wait()
 
-                if queue.Empty:
+                await self.next.wait()  # Stop right fucking here
+
+                if self.queue.empty():
                     if self.autoplay:
                         relatedVideoUrlList = getRelatedVideoUrlList(source, 3)
                         Success = False
@@ -75,8 +78,8 @@ class MusicPlayer:
                                                                                loop=self.bot.loop,
                                                                                download=False)
 
-                                for Video in self.history:
-                                    if relatedSource == Video:
+                                for title in self.history:
+                                    if relatedSource["title"] == title:
                                         Success = False
                             except DownloadError:
                                 Success = False
@@ -84,10 +87,10 @@ class MusicPlayer:
 
                         if relatedSource:
                             await self.queue.put(relatedSource)
-                            self.history.append(relatedSource)
 
                 source.cleanup()
                 self.current = None
+                self.skip = False
 
                 try:
                     await self.np.delete()

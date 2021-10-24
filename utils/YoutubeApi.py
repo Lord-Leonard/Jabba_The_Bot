@@ -22,8 +22,8 @@ def getRelatedVideoData(currentvideoid, amount):
 
     api_service_name = "youtube"
     api_version = "v3"
-    # DEVELOPER_KEY = "AIzaSyBmcyHnoniLJx96ThX5FqZmDurcdOnyYcc"
-    DEVELOPER_KEY = "AIzaSyBuCrm94Tc2AS8FXbAQzqdmEw2XQ50EAHc"
+    DEVELOPER_KEY = "AIzaSyBmcyHnoniLJx96ThX5FqZmDurcdOnyYcc"
+    # DEVELOPER_KEY = "AIzaSyBuCrm94Tc2AS8FXbAQzqdmEw2XQ50EAHc"
 
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey=DEVELOPER_KEY)
@@ -33,8 +33,9 @@ def getRelatedVideoData(currentvideoid, amount):
         maxResults=amount,
         order="relevance",
         relatedToVideoId=currentvideoid,
+        safeSearch="none",
         type="video",
-        videoCategoryId = "10"
+        videoCategoryId="10"
     )
     response = request.execute()
 
