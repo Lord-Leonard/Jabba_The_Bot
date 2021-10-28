@@ -33,3 +33,4 @@ if __name__ == '__main__':
             traceback.print_exc()
 
 client.run(discord_token)
+
