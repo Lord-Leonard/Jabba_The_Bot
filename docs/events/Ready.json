@@ -1,0 +1,53 @@
+{
+    "t": "READY",
+    "s": 1,
+    "op": 0,
+    "d": {
+        "v": 10,
+        "user_settings": {},
+        "user": {
+            "verified": true,
+            "username": "Jabba the Bot",
+            "mfa_enabled": false,
+            "id": "890835642513248266",
+            "global_name": null,
+            "flags": 0,
+            "email": null,
+            "discriminator": "6239",
+            "bot": true,
+            "avatar": "573d0b357508aade7300c4d8aa70c7bd"
+        },
+        "session_type": "normal",
+        "session_id": "aee1b20884db18173dfd5ccfcaa8ba93",
+        "resume_gateway_url": "wss://gateway-us-east1-d.discord.gg",
+        "relationships": [],
+        "private_channels": [],
+        "presences": [],
+        "guilds": [
+            {
+                "unavailable": true,
+                "id": "396781476533764117"
+            },
+            {
+                "unavailable": true,
+                "id": "764108040793489418"
+            }
+        ],
+        "guild_join_requests": [],
+        "geo_ordered_rtc_regions": [
+            "frankfurt",
+            "milan",
+            "rotterdam",
+            "stockholm",
+            "madrid"
+        ],
+        "auth": {},
+        "application": {
+            "id": "890835642513248266",
+            "flags": 40960
+        },
+        "_trace": [
+            "[\"gateway-prd-us-east1-d-0cb9\",{\"micros\":88275,\"calls\":[\"id_created\",{\"micros\":888,\"calls\":[]},\"session_lookup_time\",{\"micros\":370,\"calls\":[]},\"session_lookup_finished\",{\"micros\":13,\"calls\":[]},\"discord-sessions-prd-2-27\",{\"micros\":85736,\"calls\":[\"start_session\",{\"micros\":56626,\"calls\":[\"discord-api-85b4f5ccbd-mrf9x\",{\"micros\":50342,\"calls\":[\"get_user\",{\"micros\":9383},\"get_guilds\",{\"micros\":5439},\"send_scheduled_deletion_message\",{\"micros\":11},\"guild_join_requests\",{\"micros\":1},\"authorized_ip_coro\",{\"micros\":12}]}]},\"starting_guild_connect\",{\"micros\":65,\"calls\":[]},\"presence_started\",{\"micros\":331,\"calls\":[]},\"guilds_started\",{\"micros\":208,\"calls\":[]},\"guilds_connect\",{\"micros\":2,\"calls\":[]},\"presence_connect\",{\"micros\":28479,\"calls\":[]},\"connect_finished\",{\"micros\":28485,\"calls\":[]},\"build_ready\",{\"micros\":18,\"calls\":[]},\"clean_ready\",{\"micros\":0,\"calls\":[]},\"optimize_ready\",{\"micros\":1,\"calls\":[]},\"split_ready\",{\"micros\":1,\"calls\":[]}]}]}]"
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+# Default ignored files
+/shelf/
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+#alle heruntergeladenen MP3 datein
+*.mp3
+
+#IDE
+.idea
+
+#config Datei
+config.ini
+venv/pyvenv.cfg
+
+#songs Ordner
+songs/*
+test.py
+client_secret_264487813500-jhig0d6kt725opreqh9oqum3adqmriln.apps.googleusercontent.com.json
