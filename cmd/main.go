@@ -1,12 +1,14 @@
 // TODOS:
 // - handle errors
 // - handle heartbeat ack
+// - handle snowflakes ...
 
 package main
 
 import (
 	"Jabba_The_Bot/internal/pkg/events"
 	opcodes "Jabba_The_Bot/internal/pkg/op_codes"
+	"os"
 
 	"encoding/json"
 	"fmt"
@@ -17,6 +19,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 )
 
 // structs
@@ -52,8 +55,19 @@ type IdentifyConnectionProperties struct {
 }
 
 type ReadyData struct {
-	V int `json:"v"`
-	User
+	V      int  `json:"v"`
+	User   User `json:"user"`
+	Guilds []struct {
+		Id          string `json:"id"`
+		Unavailible bool   `json:"unavailible"`
+	} `json:"guilds"`
+	SessionId        string `json:"session_id"`
+	ResumeGatewayUrl string `json:"resume_gateway_url"`
+	Shard            *[2]int
+	Application      struct {
+		Id    string `json:"id"`
+		Flags string `json:"flags"`
+	}
 }
 
 type Heartbeat struct {
@@ -62,17 +76,38 @@ type Heartbeat struct {
 }
 
 type User struct {
+	Id               string  `json:"id"`
+	Username         string  `json:"username"`
+	Discriminator    string  `json:"discriminator"`
+	GlobalName       *string `json:"global_name"`
+	Avatar           *string `json:"avatar"`
+	Bot              bool    `json:"bot"`
+	System           bool    `json:"system"`
+	MfaEnabled       bool    `json:"mfa_enabled"`
+	Banner           *string `json:"banner"`
+	AccentColor      *int    `json:"accent_color"`
+	Locale           string  `json:"locale"`
+	Verified         bool    `json:"verified"`
+	Email            *string `json:"email"`
+	Flags            int     `json:"flags"`
+	PremiumType      int     `json:"premium_type"`
+	PublicFlags      int     `json:"public_flags"`
+	AvatarDecoration *string `json:"avatar_decoration"`
 }
 
 // consts
-const token = "ODkwODM1NjQyNTEzMjQ4MjY2.G9r2oA.pGgf6Xq0I22HhVfpbW6ewExZ9D9VTzcgKY-r9E"
 
-// variables
 var seq *int
 var c *websocket.Conn
 var heartbeat chan<- bool
+var resumeUrl string
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalln("unable to load config")
+	}
+
 	wsUrl := getWebsocketUrl()
 
 	// TODO: handle error
@@ -104,25 +139,33 @@ func main() {
 func processMessag(websocketMessage WebsocketMessage) {
 	switch websocketMessage.OP {
 	case opcodes.Hello:
+		log.Println("Processing Hello event")
 		var websocketData HelloData
 		json.Unmarshal(*websocketMessage.D, &websocketData)
 
-		fmt.Println(websocketData)
-
 		heartbeat = setInterval(sendHeartbeat, time.Duration(time.Duration(websocketData.Heartbeat_interval)*time.Millisecond))
 
-		log.Println("Start identification")
+		log.Println("Starting identification")
 		identify()
 	case opcodes.Dispatch:
 		switch *websocketMessage.T {
 		case events.Ready:
+			log.Println("Processing Ready event")
+			var readyData ReadyData
+			json.Unmarshal(*websocketMessage.D, &readyData)
 
+			empJosn, err := json.MarshalIndent(readyData, "", "  ")
+			if err != nil {
+				log.Fatalf("error parsing readyData to string", err)
+			}
+			log.Println(string(empJosn))
 		}
 	}
 }
 
 func identify() {
-	identifyData := IdentifyData{token,
+	identifyData := IdentifyData{
+		os.Getenv("TOKEN"),
 		IdentifyConnectionProperties{"linux", "jabba_the_bot", "jabba_the_bot"},
 		nil,
 		nil,
