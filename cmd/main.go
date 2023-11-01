@@ -156,7 +156,7 @@ func processMessag(websocketMessage WebsocketMessage) {
 
 			empJosn, err := json.MarshalIndent(readyData, "", "  ")
 			if err != nil {
-				log.Fatalf("error parsing readyData to string", err)
+				log.Fatalln("error parsing readyData to string", err)
 			}
 			log.Println(string(empJosn))
 		}
