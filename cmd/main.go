@@ -8,6 +8,8 @@ package main
 import (
 	"Jabba_The_Bot/internal/pkg/events"
 	opcodes "Jabba_The_Bot/internal/pkg/op_codes"
+	"Jabba_The_Bot/internal/pkg/structs"
+	"bytes"
 	"os"
 
 	"encoding/json"
@@ -23,109 +25,85 @@ import (
 )
 
 // structs
-type GatewayResponse struct {
-	URL string `json:"url"`
-}
-
-type WebsocketMessage struct {
-	OP int              `json:"op"`
-	D  *json.RawMessage `json:"d"`
-	S  *int             `json:"s,omitempty"`
-	T  *string          `json:"t,omitempty"`
-}
-
-type HelloData struct {
-	Heartbeat_interval int `json:"heartbeat_interval"`
-}
-
-type IdentifyData struct {
-	Token           string                       `json:"token"`
-	Properties      IdentifyConnectionProperties `json:"properties"`
-	Compress        *bool                        `json:"compress,omitempty"`
-	Large_threshold *int                         `json:"large_threshold,omitempty"`
-	Shard           *[2]int                      `json:"shard,omitempty"`
-	Presence        *json.RawMessage             `json:"presence,omitempty"`
-	Intents         int                          `json:"intents"`
-}
-
-type IdentifyConnectionProperties struct {
-	OS      string `json:"os"`
-	Browser string `json:"browser"`
-	Device  string `json:"device"`
-}
-
-type ReadyData struct {
-	V      int  `json:"v"`
-	User   User `json:"user"`
-	Guilds []struct {
-		Id          string `json:"id"`
-		Unavailible bool   `json:"unavailible"`
-	} `json:"guilds"`
-	SessionId        string `json:"session_id"`
-	ResumeGatewayUrl string `json:"resume_gateway_url"`
-	Shard            *[2]int
-	Application      struct {
-		Id    string `json:"id"`
-		Flags string `json:"flags"`
-	}
-}
-
-type Heartbeat struct {
-	OP int  `json:"op"`
-	D  *int `json:"d"`
-}
-
-type User struct {
-	Id               string  `json:"id"`
-	Username         string  `json:"username"`
-	Discriminator    string  `json:"discriminator"`
-	GlobalName       *string `json:"global_name"`
-	Avatar           *string `json:"avatar"`
-	Bot              bool    `json:"bot"`
-	System           bool    `json:"system"`
-	MfaEnabled       bool    `json:"mfa_enabled"`
-	Banner           *string `json:"banner"`
-	AccentColor      *int    `json:"accent_color"`
-	Locale           string  `json:"locale"`
-	Verified         bool    `json:"verified"`
-	Email            *string `json:"email"`
-	Flags            int     `json:"flags"`
-	PremiumType      int     `json:"premium_type"`
-	PublicFlags      int     `json:"public_flags"`
-	AvatarDecoration *string `json:"avatar_decoration"`
-}
 
 // consts
 
 var seq *int
-var c *websocket.Conn
-var heartbeat chan<- bool
+var conn *websocket.Conn
+var client *http.Client
 var resumeUrl string
 
+var heartbeat chan<- bool
+
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalln("unable to load config")
+	loadDotenv()
+
+	fmt.Println("Initializing commands")
+
+	url := "https://discord.com/api/v10/applications/" + os.Getenv("APPLICATIONID") + "/commands"
+
+	log.Println(url)
+
+	applicationCommand := structs.ApplicationCommand{
+		Name:        "ping",
+		Type:        1,
+		Description: "Ping - Pong",
 	}
+
+	applicationCommandBytes, err := json.Marshal(applicationCommand)
+	if err != nil {
+		log.Fatalln("Parsing application command:", err)
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(applicationCommandBytes))
+	if err != nil {
+		log.Fatalln("Creating application command request:", err)
+	}
+
+	req.Header.Add("Authorization", "Bot "+os.Getenv("TOKEN"))
+
+	req.Header.Set("Content-Type", "application/json")
+
+	fmt.Println(req)
+
+	client = &http.Client{}
+
+	res, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Println(res)
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(err)
+		return
+	}
+
+	fmt.Println(string(body))
 
 	wsUrl := getWebsocketUrl()
 
 	// TODO: handle error
-	c, _, _ = websocket.DefaultDialer.Dial(wsUrl, nil)
-	defer c.Close()
-	log.Println("connected to Websocket")
+	conn, _, _ = websocket.DefaultDialer.Dial(wsUrl, nil)
+	defer conn.Close()
+
+	log.Println("Initialization Completed")
 
 	for {
 		// read messages from ws
-		_, message, err := c.ReadMessage()
+		_, message, err := conn.ReadMessage()
 		if err != nil {
-			log.Println("read:", err)
+			log.Fatalln("Read here :", err)
+			log.Fatalln(message)
 			return
 		}
-		log.Println("message recived:", string(message))
+		log.Println("Data recived")
 
 		// parse messages into envelope
-		var websocketMessage WebsocketMessage
+		var websocketMessage structs.WebsocketMessage
 		err = json.Unmarshal(message, &websocketMessage)
 		if err != nil {
 			log.Println("parse:", err)
@@ -133,45 +111,111 @@ func main() {
 
 		processMessag(websocketMessage)
 	}
-
 }
 
-func processMessag(websocketMessage WebsocketMessage) {
+func loadDotenv() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalln("Unable to load config")
+	}
+}
+
+func processMessag(websocketMessage structs.WebsocketMessage) {
+	log.Println("Processing message. OPCODE: ", websocketMessage.OP)
+
 	switch websocketMessage.OP {
 	case opcodes.Hello:
 		log.Println("Processing Hello event")
-		var websocketData HelloData
+		var websocketData structs.HelloData
 		json.Unmarshal(*websocketMessage.D, &websocketData)
 
 		heartbeat = setInterval(sendHeartbeat, time.Duration(time.Duration(websocketData.Heartbeat_interval)*time.Millisecond))
 
-		log.Println("Starting identification")
 		identify()
 	case opcodes.Dispatch:
+		log.Println("Event", *websocketMessage.T, "recived")
+
 		switch *websocketMessage.T {
 		case events.Ready:
 			log.Println("Processing Ready event")
-			var readyData ReadyData
+			var readyData structs.ReadyData
 			json.Unmarshal(*websocketMessage.D, &readyData)
 
-			empJosn, err := json.MarshalIndent(readyData, "", "  ")
-			if err != nil {
-				log.Fatalln("error parsing readyData to string", err)
+		case events.InteractionCreate:
+			log.Println("Processing Interaction")
+
+			var interactionData structs.InteractionCreateData
+			json.Unmarshal(*websocketMessage.D, &interactionData)
+
+			prettyPrint(interactionData)
+
+			interactionResponseData := structs.InteractionCallbackDataMessage{
+				TTS:     false,
+				Content: "Pong",
+				Embeds:  []structs.Embed{},
+				AllowMentions: structs.AllowMentions{
+					Parse: []string{},
+				},
 			}
-			log.Println(string(empJosn))
+
+			interactionResponseDataJson, err := json.Marshal(interactionResponseData)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			interactionResponse := structs.InteractionResponse{
+				Type: 4,
+				Data: json.RawMessage(interactionResponseDataJson),
+			}
+
+			url := fmt.Sprintf(
+				"https://discord.com/api/v10/interactions/%s/%s/callback",
+				interactionData.Id,
+				interactionData.Token,
+			)
+
+			interactionResponseBytes, err := json.Marshal(interactionResponse)
+			if err != nil {
+				log.Fatalln("Parsing application command:", err)
+			}
+
+			req, err := http.NewRequest("POST", url, bytes.NewBuffer(interactionResponseBytes))
+			if err != nil {
+				log.Fatalln("Creating application command request:", err)
+			}
+
+			req.Header.Set("Content-Type", "application/json")
+
+			fmt.Println(req)
+
+			res, err := client.Do(req)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			log.Println(res)
+			defer res.Body.Close()
+
+			log.Println("Interaction Response sent")
 		}
 	}
 }
 
 func identify() {
-	identifyData := IdentifyData{
-		os.Getenv("TOKEN"),
-		IdentifyConnectionProperties{"linux", "jabba_the_bot", "jabba_the_bot"},
-		nil,
-		nil,
-		nil,
-		nil,
-		641,
+	log.Println("Identification started")
+
+	identifyData := structs.IdentifyData{
+		Token: os.Getenv("TOKEN"),
+		Properties: structs.IdentifyConnectionProperties{
+			OS:      "linux",
+			Browser: "jabba_the_bot",
+			Device:  "jabba_the_bot",
+		},
+		Compress:        nil,
+		Large_threshold: nil,
+		Shard:           nil,
+		Presence:        nil,
+		Intents:         641,
 	}
 
 	bytesIdentifyData, err := json.Marshal(identifyData)
@@ -181,9 +225,16 @@ func identify() {
 
 	rawIdentifyData := json.RawMessage(bytesIdentifyData)
 
-	payload := WebsocketMessage{opcodes.Identify, &rawIdentifyData, nil, nil}
+	payload := structs.WebsocketMessage{
+		OP: opcodes.Identify,
+		D:  &rawIdentifyData,
+		S:  nil,
+		T:  nil,
+	}
 
-	c.WriteJSON(payload)
+	conn.WriteJSON(payload)
+
+	log.Println("Identification finished")
 }
 
 func getWebsocketUrl() string {
@@ -199,7 +250,7 @@ func getWebsocketUrl() string {
 		log.Fatalln(err)
 	}
 
-	var responseStruct GatewayResponse
+	var responseStruct structs.GatewayResponse
 	if err != json.Unmarshal(body, &responseStruct) {
 		log.Fatalln(err)
 	}
@@ -208,7 +259,7 @@ func getWebsocketUrl() string {
 }
 
 func sendHeartbeat() {
-	err := c.WriteJSON(Heartbeat{opcodes.Heartbeat, seq})
+	err := conn.WriteJSON(structs.Heartbeat{OP: opcodes.Heartbeat, D: seq})
 	if err != nil {
 		log.Println("heartbeat:", err)
 	}
@@ -233,4 +284,13 @@ func setInterval(p any, interval time.Duration) chan<- bool {
 	}()
 
 	return stopIt
+}
+
+func prettyPrint(readyData any) {
+	empJosn, err := json.MarshalIndent(readyData, "", "  ")
+	if err != nil {
+		log.Fatalln("error parsing readyData to string", err)
+	}
+
+	log.Println(string(empJosn))
 }
