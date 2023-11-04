@@ -1,0 +1,66 @@
+{
+    "version": 1,
+    "type": 2,
+    "token": "aW50ZXJhY3Rpb246MTE3MDI3MzkzNTYxNTYwNjgwNDprbTVnTzZhZGg3aUt0M1JPWVRDaW9QWjBVQzluOWszN1dsVWtDN05ZenpzMUZJeVhkbjhqS3UyektldmhBVkRWUmdyWGs5R0pWQTNTTU5hcmtZbzB6QWpSeEs3Z01yN0xYN0x1aHN1Skp3dnR0SXh6cERJN0JabkxWYjRBYmliZg",
+    "member": {
+        "user": {
+            "username": "leonard6964",
+            "public_flags": 0,
+            "id": "427523869230759946",
+            "global_name": "Leonard",
+            "discriminator": "0",
+            "avatar_decoration_data": null,
+            "avatar": "2def9ddd0c0c4115978da768fc4cd67b"
+        },
+        "unusual_dm_activity_until": null,
+        "roles": [
+            "396797382819577856"
+        ],
+        "premium_since": null,
+        "permissions": "559625648209655",
+        "pending": false,
+        "nick": "Leo",
+        "mute": false,
+        "joined_at": "2021-08-07T14:48:08.207000+00:00",
+        "flags": 0,
+        "deaf": false,
+        "communication_disabled_until": null,
+        "avatar": null
+    },
+    "locale": "de",
+    "id": "1170273935615606804",
+    "guild_locale": "en-US",
+    "guild_id": "396781476533764117",
+    "guild": {
+        "locale": "en-US",
+        "id": "396781476533764117",
+        "features": [
+            "SOUNDBOARD"
+        ]
+    },
+    "entitlements": [],
+    "entitlement_sku_ids": [],
+    "data": {
+        "type": 1,
+        "name": "ping",
+        "id": "1170123490360311869"
+    },
+    "channel_id": "396781476999594005",
+    "channel": {
+        "type": 0,
+        "topic": null,
+        "rate_limit_per_user": 0,
+        "position": 0,
+        "permissions": "559625648209655",
+        "parent_id": "396781476999594004",
+        "nsfw": false,
+        "name": "blödsinn",
+        "last_pin_timestamp": "2023-09-10T10:20:53+00:00",
+        "last_message_id": "1170047939926831164",
+        "id": "396781476999594005",
+        "guild_id": "396781476533764117",
+        "flags": 0
+    },
+    "application_id": "890835642513248266",
+    "app_permissions": "559625648209655"
+}
