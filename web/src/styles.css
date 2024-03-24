@@ -1,0 +1,65 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+:root {
+  --background: oklch(14.5% 0.008 326);
+  --foreground: #0e1628;
+  --card: #ffffff;
+  --card-foreground: #0e1628;
+  --primary: #22c55e;
+  --primary-foreground: #ffffff;
+  --secondary: #e7ecff;
+  --secondary-foreground: #102043;
+  --destructive: #c81e3a;
+  --destructive-foreground: #ffffff;
+  --muted-foreground: #4b5673;
+  --border: #dbe2f3;
+  --input: #d1daef;
+  --ring: #7c95df;
+  --radius: 0.625rem;
+}
+
+@theme inline {
+  --font-sans: 'Segoe UI', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-md: var(--radius);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--foreground);
+  background:
+    var(--background);
+  font-family: var(--font-sans);
+}
+
+.site-main {
+  scrollbar-width: none; /* Firefox */
+}
+
+.site-main::-webkit-scrollbar {
+  display: none; /* WebKit */
+}

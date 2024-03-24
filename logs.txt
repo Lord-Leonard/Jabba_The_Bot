@@ -1,0 +1,335 @@
+GOROOT=G:\Dev\go\go1.25.5 #gosetup
+GOPATH=C:\Users\leona\go #gosetup
+G:\Dev\go\go1.25.5\bin\go.exe build -o C:\Users\leona\AppData\Local\JetBrains\GoLand2025.3\tmp\GoLand\___1go_build_Jabba_The_Bot_cmd_jabba.exe Jabba_The_Bot/cmd/jabba #gosetup
+C:\Users\leona\AppData\Local\JetBrains\GoLand2025.3\tmp\GoLand\___1go_build_Jabba_The_Bot_cmd_jabba.exe #gosetup
+time=2026-03-01T02:36:04.272+01:00 level=INFO msg="Starting Teamspeak client" server=46.225.78.80:9987
+time=2026-03-01T02:36:04.288+01:00 level=INFO msg="HTTP control API listening" addr=:8080
+time=2026-03-01T02:36:04.328+01:00 level=DEBUG msg="Received message" Name=initivexpand2
+time=2026-03-01T02:36:04.344+01:00 level=DEBUG msg="Received message" Name=initserver
+time=2026-03-01T02:36:04.355+01:00 level=DEBUG msg="Received message" Name=channellist
+time=2026-03-01T02:36:04.355+01:00 level=DEBUG msg="ignoring malformed command packet" type=command flags=none pid=5 error="invalid command name bytes"
+time=2026-03-01T02:36:04.366+01:00 level=DEBUG msg="Received message" Name=channellist
+time=2026-03-01T02:36:04.366+01:00 level=DEBUG msg="Received message" Name=notifyservergrouplist
+time=2026-03-01T02:36:04.366+01:00 level=DEBUG msg="Received message" Name=notifychannelgrouplist
+time=2026-03-01T02:36:04.377+01:00 level=DEBUG msg="Received message" Name=notifyclientneededpermissions
+time=2026-03-01T02:36:10.390+01:00 level=DEBUG msg="Received message" Name=notifytextmessage
+time=2026-03-01T02:36:10.390+01:00 level=INFO msg="music queued" query="cowboy bebop ost rain" position=1
+time=2026-03-01T02:36:10.390+01:00 level=INFO msg="music start requested" query="cowboy bebop ost rain" autoplay=false
+time=2026-03-01T02:36:10.401+01:00 level=DEBUG msg="Received message" Name=notifytextmessage
+time=2026-03-01T02:36:10.829+01:00 level=INFO msg="music search completed" query="cowboy bebop ost rain" results=12 duration=439.2953ms
+time=2026-03-01T02:36:10.829+01:00 level=INFO msg="download pipeline init" videoID=6GB3_O9-iEw title=Rain
+time=2026-03-01T02:36:10.830+01:00 level=INFO msg="cache hit" videoID=6GB3_O9-iEw path=D:\Repositorys\Jabba_The_Bot\library\cache\webm\6GB3_O9-iEw.webm
+time=2026-03-01T02:36:10.830+01:00 level=INFO msg="first encoded bytes received" videoID=6GB3_O9-iEw duration=516µs cacheHit=true
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Version ID=0x4286 Size=0x01 Value=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=ReadVersion ID=0x42f7 Size=0x01 Value=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=MaxIDLength ID=0x42f2 Size=0x01 Value=4
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=MaxSizeLength ID=0x42f3 Size=0x01 Value=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=DocType ID=0x4282 Size=0x04 Value=webm
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=DocTypeVersion ID=0x4287 Size=0x01 Value=4
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=DocTypeReadVersion ID=0x4285 Size=0x01 Value=2
+time=2026-03-01T02:36:10.830+01:00 level=INFO msg="music stream initialized" videoID=6GB3_O9-iEw title=Rain duration=516µs
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Segment ID=0x18538067 size=3734561
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=SeekHead ID=0x114d9b74 size=63
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Seek ID=0x4dbb size=18
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Seek ID" ID=0x53ab size=4 data="[00010101 01001001 10101001 01100110]" hex=0x1549a966
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Seek Position" ID=0x53ac size=8 data=68
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Seek ID=0x4dbb size=18
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Seek ID" ID=0x53ab size=4 data="[00010110 01010100 10101110 01101011]" hex=0x1654ae6b
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Seek Position" ID=0x53ac size=8 data=127
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Seek ID=0x4dbb size=18
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Seek ID" ID=0x53ab size=4 data="[00011100 01010011 10111011 01101011]" hex=0x1c53bb6b
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Seek Position" ID=0x53ac size=8 data=211
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Info ID=0x1549a966 size=54
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Info TimestampScale" ID=0x2ad7b1 size=3 data=1000000
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Info Duration" ID=0x4489 size=4 data=203481.000000
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Info MuxingApp" ID=0x4d80 size=17 data=google/video-file
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Info WritingApp" ID=0x5741 size=17 data=google/video-file
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Tracks ID=0x1654ae6b size=79
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="TrackEntry #0" ID=0xae size=77
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="TrackEntry Number" ID=0xd7 size=1 data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="TrackEntry UID" ID=0x73c5 size=7 data=66769115370470959
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="TrackEntry Type" ID=0x83 size=1 data=2
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Packet ID=0x9c size=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Packet ID=0x86 size=6
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Packet ID=0x63a2 size=19
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Packet ID=0x56aa size=3
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Packet ID=0x56bb size=4
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Packet ID=0xe1 size=13
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Cues ID=0x1c53bb6b size=348
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=0
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=7
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=565
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=10001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=210664
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=20001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=406734
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=30001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=599336
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=40001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=784650
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=50001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=954212
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=60001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=1134223
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=70001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=1318946
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=80001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=1496669
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=90001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=1669579
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=100001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=1847644
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=110001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=2016246
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=120001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=2192460
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=130001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=2379668
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=140001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=2560188
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=150001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=2745599
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=160001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=2939530
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=170001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=3121399
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=180001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=3299680
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=190001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=3494725
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTime data=200001
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=CueClusterPosition data=3689765
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg=Cluster ID=0x1f43b675 size=210092
+time=2026-03-01T02:36:10.830+01:00 level=DEBUG msg="Cluster Timestamp" ID=0xe7 size=1 data=0
+time=2026-03-01T02:36:10.830+01:00 level=ERROR msg="Error playing opus" error="opus frame too large for TeamSpeak packet: 558 > 484 bytes" videoID=6GB3_O9-iEw
+time=2026-03-01T02:36:10.830+01:00 level=INFO msg="music playback finished" videoID=6GB3_O9-iEw duration=440.323ms
+time=2026-03-01T02:36:10.841+01:00 level=DEBUG msg="Received message" Name=notifytextmessage
+time=2026-03-01T02:36:10.841+01:00 level=DEBUG msg="Received message" Name=notifyclientupdated
+time=2026-03-01T02:36:10.842+01:00 level=DEBUG msg="Received message" Name=notifyclientupdated
+time=2026-03-01T02:36:11.375+01:00 level=INFO msg="autoplay queued recommendations" seedVideoID=6GB3_O9-iEw added=5
+time=2026-03-01T02:36:11.375+01:00 level=INFO msg="autoplay prefetch deferred" count=2
+time=2026-03-01T02:36:11.375+01:00 level=INFO msg="music start requested" query="Words That We Couldn't Say" autoplay=true
+time=2026-03-01T02:36:11.376+01:00 level=INFO msg="autoplay track selected" videoID=satDkS4qB34 title="Words That We Couldn't Say" cacheHit=false
+time=2026-03-01T02:36:11.376+01:00 level=INFO msg="download pipeline init" videoID=satDkS4qB34 title="Words That We Couldn't Say"
+time=2026-03-01T02:36:11.376+01:00 level=INFO msg="download tools resolved" videoID=satDkS4qB34 ytDlp=C:\ProgramData\chocolatey\bin\yt-dlp.exe ffmpeg=bypassed duration=515.5µs
+time=2026-03-01T02:36:11.379+01:00 level=INFO msg="yt-dlp started" videoID=satDkS4qB34 duration=3.6183ms
+[youtube] Extracting URL: https://www.youtube.com/watch?v=satDkS4qB34
+[youtube] satDkS4qB34: Downloading webpage
+[youtube] satDkS4qB34: Downloading tv client config
+[youtube] satDkS4qB34: Downloading player 00c52fa0-tv
+[youtube] satDkS4qB34: Downloading tv player API JSON
+[youtube] [jsc:deno] Solving JS challenges using deno
+[info] satDkS4qB34: Downloading 1 format(s): 250
+[download] Destination: -
+time=2026-03-01T02:36:14.133+01:00 level=INFO msg="first encoded bytes received" videoID=satDkS4qB34 duration=2.7570686s cacheHit=false
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Version ID=0x4286 Size=0x01 Value=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=ReadVersion ID=0x42f7 Size=0x01 Value=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=MaxIDLength ID=0x42f2 Size=0x01 Value=4
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=MaxSizeLength ID=0x42f3 Size=0x01 Value=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=DocType ID=0x4282 Size=0x04 Value=webm
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=DocTypeVersion ID=0x4287 Size=0x01 Value=4
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=DocTypeReadVersion ID=0x4285 Size=0x01 Value=2
+time=2026-03-01T02:36:14.133+01:00 level=INFO msg="music stream initialized" videoID=satDkS4qB34 title="Words That We Couldn't Say" duration=2.7570686s
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Segment ID=0x18538067 size=1793808
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=SeekHead ID=0x114d9b74 size=63
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Seek ID=0x4dbb size=18
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Seek ID" ID=0x53ab size=4 data="[00010101 01001001 10101001 01100110]" hex=0x1549a966
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Seek Position" ID=0x53ac size=8 data=68
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Seek ID=0x4dbb size=18
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Seek ID" ID=0x53ab size=4 data="[00010110 01010100 10101110 01101011]" hex=0x1654ae6b
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Seek Position" ID=0x53ac size=8 data=127
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Seek ID=0x4dbb size=18
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Seek ID" ID=0x53ab size=4 data="[00011100 01010011 10111011 01101011]" hex=0x1c53bb6b
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Seek Position" ID=0x53ac size=8 data=211
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Info ID=0x1549a966 size=54
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Info TimestampScale" ID=0x2ad7b1 size=3 data=1000000
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Info Duration" ID=0x4489 size=4 data=209781.000000
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Info MuxingApp" ID=0x4d80 size=17 data=google/video-file
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Info WritingApp" ID=0x5741 size=17 data=google/video-file
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Tracks ID=0x1654ae6b size=79
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="TrackEntry #0" ID=0xae size=77
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="TrackEntry Number" ID=0xd7 size=1 data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="TrackEntry UID" ID=0x73c5 size=7 data=12573127867584643
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="TrackEntry Type" ID=0x83 size=1 data=2
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Packet ID=0x9c size=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Packet ID=0x86 size=6
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Packet ID=0x63a2 size=19
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Packet ID=0x56aa size=3
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Packet ID=0x56bb size=4
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Packet ID=0xe1 size=13
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Cues ID=0x1c53bb6b size=348
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=0
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=7
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=565
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=10001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=90151
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=20001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=179964
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=30001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=266197
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=40001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=350517
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=50001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=437158
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=60001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=520528
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=70001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=604862
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=80001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=696562
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=90001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=787566
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=100001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=875314
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=110001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=959392
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=120001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1044231
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=130001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1130690
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=140001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1215042
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=150001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1303864
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=160001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1392414
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=170001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1480291
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=180001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1566408
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=190001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1648217
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CuePoint
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTime data=200001
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrackPositions size=8
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueTrack data=1
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=CueClusterPosition data=1737615
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg=Cluster ID=0x1f43b675 size=89579
+time=2026-03-01T02:36:14.133+01:00 level=DEBUG msg="Cluster Timestamp" ID=0xe7 size=1 data=0
+time=2026-03-01T02:36:14.144+01:00 level=DEBUG msg="Received message" Name=notifytextmessage
+time=2026-03-01T02:36:14.145+01:00 level=DEBUG msg="Received message" Name=notifyclientupdated
+time=2026-03-01T02:36:14.145+01:00 level=DEBUG msg="Received message" Name=notifyclientupdated
+[download] Download completed
+time=2026-03-01T02:36:14.604+01:00 level=INFO msg="cache stored" videoID=satDkS4qB34 path=D:\Repositorys\Jabba_The_Bot\library\cache\webm\satDkS4qB34.webm
+time=2026-03-01T02:36:14.604+01:00 level=INFO msg="download pipeline completed" videoID=satDkS4qB34 duration=3.2286321s

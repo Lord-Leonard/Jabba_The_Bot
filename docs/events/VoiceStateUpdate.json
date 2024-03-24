@@ -1,0 +1,43 @@
+{
+    "t": "VOICE_STATE_UPDATE",
+    "s": 8,
+    "op": 0,
+    "d": {
+        "member": {
+            "user": {
+                "username": "leonard6964",
+                "public_flags": 0,
+                "id": "427523869230759946",
+                "global_name": "Leonard",
+                "display_name": "Leonard",
+                "discriminator": "0",
+                "bot": false,
+                "avatar_decoration_data": null,
+                "avatar": "2def9ddd0c0c4115978da768fc4cd67b"
+            },
+            "roles": [
+                "396797382819577856"
+            ],
+            "premium_since": null,
+            "pending": false,
+            "nick": "Leo",
+            "mute": false,
+            "joined_at": "2021-08-07T14:48:08.207000+00:00",
+            "flags": 0,
+            "deaf": false,
+            "communication_disabled_until": null,
+            "avatar": null
+        },
+        "user_id": "427523869230759946",
+        "suppress": false,
+        "session_id": "d3714c8ab4c77126592ed18d5244bab2",
+        "self_video": false,
+        "self_mute": false,
+        "self_deaf": false,
+        "request_to_speak_timestamp": null,
+        "mute": false,
+        "guild_id": "396781476533764117",
+        "deaf": false,
+        "channel_id": "552846284101517334"
+    }
+}

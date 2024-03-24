@@ -1,0 +1,78 @@
+{
+  "responseContext": "",
+  "contents": {
+    "singleColumnMusicWatchNextResultsRenderer": {
+      "tabbedRenderer": {
+        "watchNextTabbedResultsRenderer": {
+          "tabs": [
+            {
+              "tabRenderer": {
+                "title": "Up next",
+                "content": {
+                  "musicQueueRenderer": {
+                    "content": {
+                      "playlistPanelRenderer": {
+                        "contents": [
+                          {
+                            "playlistPanelVideoRenderer": {
+                              "title": {
+                                "runs": [
+                                  {
+                                    "text": "Together Forever"
+                                  }
+                                ]
+                              },
+                              "longBylineText": "string",
+                              "thumbnail": "string",
+                              "lengthText": "string",
+                              "selected": false,
+                              "navigationEndpoint": {
+                                "clickTrackingParams": "CNMGEMggGAEiEwj8sICRyaKSAxXIJlUIHRrsKKkyA0JGYUjg1KSl8LSG-8gBmgEFCAwQ-B3KAQT2QdBO",
+                                "watchEndpoint": {
+                                  "videoId": "yPYZpwSpKmA",
+                                  "playlistId": "RDAMVMdQw4w9WgXcQ",
+                                  "index": 1,
+                                  "params": "OAHyAQIIAQ%3D%3D",
+                                  "playerParams": "gAQB8AUBygYQMjg5RjRBNDZERjBBMzBEMg%3D%3D",
+                                  "playlistSetVideoId": "289F4A46DF0A30D2",
+                                  "loggingContext": "string",
+                                  "watchEndpointMusicSupportedConfigs": "string"
+                                }
+                              },
+                              "videoId": "yPYZpwSpKmA",
+                              "shortBylineText": "string",
+                              "trackingParams": "CNMGEMggGAEiEwj8sICRyaKSAxXIJlUIHRrsKKk=",
+                              "menu": "string",
+                              "playlistSetVideoId": "289F4A46DF0A30D2",
+                              "canReorder": true,
+                              "queueNavigationEndpoint": "string"
+                            }
+                          }
+                        ],
+                        "playlistId": "RDAMVMdQw4w9WgXcQ",
+                        "isInfinite": true,
+                        "continuations": "string",
+                        "trackingParams": "CCEQxyAiEwj8sICRyaKSAxXIJlUIHRrsKKk=",
+                        "numItemsToShow": 25,
+                        "shuffleToggleButton": "string"
+                      }
+                    },
+                    "hack": true,
+                    "header": "string",
+                    "subHeaderChipCloud": "string"
+                  }
+                },
+                "trackingParams": "CBQQn7QFGAQiEwj8sICRyaKSAxXIJlUIHRrsKKk="
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "currentVideoEndpoint": "string",
+  "trackingParams": "CAAQg2ciEwj8sICRyaKSAxXIJlUIHRrsKKk=",
+  "playerOverlays": "string",
+  "videoReporting": "string",
+  "queueContextParams": "CAIaEVJEQU1WTWRRdzR3OVdnWGNRIPOYsJHJopIDMgtkUXc0dzlXZ1hjUToQNTZCNDRGNkQxMDU1N0NDNkIRUkRBTVZNZFF3NHc5V2dYY1FQAVoECAAQAWIAcAF4AQ=="
+}

@@ -1,0 +1,62 @@
+<head>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* prevent page scroll */
+        }
+
+        .page {
+            height: 100svh;              /* full viewport */
+            display: grid;
+            grid-template-rows: auto 1fr; /* header + content */
+        }
+
+        /* Header remains natural height */
+        .site-header {
+            background: white;
+            z-index: 10;
+        }
+
+        /* This becomes the ONLY scroll container */
+        .site-main {
+            overflow-y: auto;
+            min-height: 0;     /* critical for grid/flex scroll containers */
+        }
+
+        /* Hero fills visible area below header */
+        .hero {
+            min-height: 100%;
+            display: grid;
+            place-items: center;
+        }
+
+        /* Just demo spacing */
+        .below {
+            padding: 2rem;
+        }
+
+        .site-main {
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .site-main::-webkit-scrollbar {
+            display: none; /* WebKit */
+        }
+    </style>
+</head>
+<body class="page">
+<header class="site-header">
+    <div style="background-color: red; height: 50px"></div>
+</header>
+
+<main class="site-main">
+    <section class="hero">
+        <div style="background-color: blue; height: 100%; width: 100%"></div>
+    </section>
+
+    <section class="below">
+        <div style="background-color: purple; height: 200px"></div>
+    </section>
+</main>
+</body>

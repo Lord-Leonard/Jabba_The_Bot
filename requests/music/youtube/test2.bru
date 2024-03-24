@@ -1,0 +1,28 @@
+meta {
+  name: test2
+  type: http
+  seq: 4
+}
+
+get {
+  url: https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=never%20gonna%20give%20you%20up&videoCategoryId=10&type=video&key=AIzaSyCfVwtNkeGyxdU6mbGiDpc8ggMuHn2wsnM
+  body: none
+  auth: inherit
+}
+
+params:query {
+  part: snippet
+  q: never%20gonna%20give%20you%20up
+  videoCategoryId: 10
+  type: video
+  key: AIzaSyCfVwtNkeGyxdU6mbGiDpc8ggMuHn2wsnM
+}
+
+headers {
+  Accept: application/json
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}
