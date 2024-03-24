@@ -6,7 +6,7 @@ import (
 )
 
 type GatewayResponse struct {
-	URL string `json:"url"`
+	Url string `json:"url"`
 }
 
 type WebsocketMessage struct {
@@ -285,7 +285,7 @@ type Embed struct {
 	Title       string         `json:"title,omitempty"`
 	Type        string         `json:"type,omitempty"`
 	Description string         `json:"description,omitempty"`
-	URL         string         `json:"url,omitempty"`
+	Url         string         `json:"url,omitempty"`
 	Timestamp   time.Time      `json:"timestamp,omitempty"`
 	Color       int            `json:"color,omitempty"`
 	Footer      EmbedFooter    `json:"footer,omitempty"`
@@ -500,7 +500,7 @@ type Guild struct {
 	VerificationLevel          int           `json:"verification_level"`
 	DefaultMessageNotification int           `json:"default_message_notification"`
 	ExplicitContentFilter      int           `json:"explicit_content_filter"`
-	Roles                      []Roles       `json:"roles"`
+	Roles                      []Role        `json:"roles"`
 	Emojis                     []Emoji       `json:"emojis"`
 	Features                   []string      `json:"features"`
 	MFALevel                   int           `json:"mfa_level"`
@@ -525,21 +525,33 @@ type Guild struct {
 	Stickers                   []Sticker     `json:"sticker,omitempty"`
 	PremiumProgressBarEnabled  bool          `json:"premium_progress_bar_enabled"`
 	SafetyAlertsChannelId      string        `json:"safety_alerts_channel_id"`
+	/* Guild Create event specific Fields */
+	JoinedAt             time.Time             `json:"joined_at"`
+	Large                bool                  `json:"large"`
+	Unavailible          bool                  `json:"unavailable"`
+	MemberCount          int                   `json:"member_count"`
+	VoiceStates          []VoiceState          `json:"voice_states"`
+	Members              []GuildMember         `json:"members"`
+	Channels             []Channel             `json:"channels"`
+	Threads              []Channel             `json:"threads"`
+	Presences            []PresenceUpdate      `json:"presences"`
+	StageInstances       []StageInstance       `json:"stage_instances"`
+	GuildScheduledEvents []GuildScheduledEvent `json:"guild_scheduled_events"`
 }
 
-type Roles struct {
-	Id           string     `json:"id"`
-	Name         string     `json:"name"`
-	Color        int        `json:"color"`
-	Hoist        bool       `json:"hoist"`
-	Icon         string     `json:"icon,omitempty"`
-	UnicodeEmoji string     `json:"unicode_emoji,omitempty"`
-	Position     int        `json:"position"`
-	Permissions  string     `json:"permissions"`
-	Managed      bool       `json:"managed"`
-	Mentionable  bool       `json:"mentionalbe"`
-	Tags         []RoleTags `json:"tags,omitempty"`
-	Flags        int        `json:"flags"`
+type Role struct {
+	Id           string   `json:"id"`
+	Name         string   `json:"name"`
+	Color        int      `json:"color"`
+	Hoist        bool     `json:"hoist"`
+	Icon         string   `json:"icon,omitempty"`
+	UnicodeEmoji string   `json:"unicode_emoji,omitempty"`
+	Position     int      `json:"position"`
+	Permissions  string   `json:"permissions"`
+	Managed      bool     `json:"managed"`
+	Mentionable  bool     `json:"mentionalbe"`
+	Tags         RoleTags `json:"tags,omitempty"`
+	Flags        int      `json:"flags"`
 }
 
 type RoleTags struct {
@@ -586,7 +598,7 @@ type InstallParams struct {
 type MessageReference struct {
 	MessageId       string `json:"message_id"`
 	ChannelId       string `json:"channel_id"`
-	GuildID         string `json:"guild_id"`
+	GuildId         string `json:"guild_id"`
 	FailIfNotExists bool   `json:"fail_if_not_exists"`
 }
 
@@ -609,4 +621,119 @@ type RoleSubscriptionData struct {
 	TierName                  string `json:"tier_name"`
 	TotalMonthsSubscribed     int    `json:"total_months_subscribed"`
 	IsRenewal                 bool   `json:"is_renewal"`
+}
+
+type VoiceState struct {
+	GuildId                 string       `json:"guild_id,omitempty"`
+	ChannelId               string       `json:"channel_id"`
+	UserId                  string       `json:"user_id,omitempty"`
+	Member                  *GuildMember `json:"member,omitempty"`
+	SessionId               string       `json:"session_id,omitempty"`
+	Deaf                    bool         `json:"deaf,omitempty"`
+	Mute                    bool         `json:"mute,omitempty"`
+	SelfDeaf                bool         `json:"self_deaf"`
+	SelfMute                bool         `json:"self_mute"`
+	SelfStream              bool         `json:"self_stream,omitempty"`
+	SelfVideo               bool         `json:"self_vide,omitempty"`
+	Suppress                bool         `json:"suppress,omitempty"`
+	RequestToSpeakTimestamp *time.Time   `json:"request_to_speak_timestamp,omitempty"`
+}
+
+type PresenceUpdate struct {
+	User         User         `json:"user"`
+	GuildId      string       `json:"guild_id"`
+	Status       string       `json:"status"`
+	Activities   []Activity   `json:"activities"`
+	ClientStatus ClientStatus `json:"client_status"`
+}
+
+type Activity struct {
+	Name          string            `json:"name"`
+	Type          int               `json:"type"`
+	Url           string            `json:"url,omitempty"`
+	CreatedAt     int               `json:"created_at"` // unix timestamp
+	Timestamp     ActivityTimestamp `json:"timestamp,omitempty"`
+	ApplicationId string            `json:"application_id,omitempty"`
+	Details       string            `json:"details,omitempty"`
+	State         string            `json:"state,omitempty"`
+	Emoji         ActivityEmoji     `json:"emoji,omitempty"`
+	Party         ActivityParty     `json:"party,omitempty"`
+	Assets        ActivityAssets    `json:"assets,omitempty"`
+	Secrets       ActivitySecrets   `json:"secrets,omitempty"`
+	Instances     bool              `json:"instances,omitempty"`
+	Flags         int               `json:"flags,omitempty"`
+	Buttons       []ActivityButton  `json:"buttons,omitempty"`
+}
+
+type ActivityTimestamp struct {
+	Start int `json:"start,omitempty"`
+	End   int `json:"end,omitempty"`
+}
+
+type ActivityEmoji struct {
+	Name     string `json:"name"`
+	Id       string `json:"id,omitempty"`
+	Animated bool   `json:"animated"`
+}
+
+type ActivityParty struct {
+	Id   string `json:"id,omitempty"`
+	Size [2]int `json:"size,omitempty"`
+}
+
+type ActivityAssets struct {
+	LargeImage string `json:"large_image,omitempty"`
+	LargeText  string `json:"large_text,omitempty"`
+	SmallImage string `json:"small_image,omitempty"`
+	SmallText  string `json:"small_text,omitempty"`
+}
+
+type ActivitySecrets struct {
+	Join     string `json:"join,omitempty"`
+	Spectate string `json:"spectate,omitempty"`
+	Match    string `json:"match,omitempty"`
+}
+
+type ActivityButton struct {
+	Lable string `json:"label"`
+	Url   string `json:"url"`
+}
+
+type ClientStatus struct {
+	Desktop string `json:"desktop,omitempty"`
+	Mobile  string `json:"mobile,omitempty"`
+	Web     string `json:"web,omitempty"`
+}
+
+type StageInstance struct {
+	Id                    string `json:"id"`
+	GuildId               string `json:"guild_id"`
+	ChannelId             string `json:"channel_id"`
+	Topic                 string `json:"topic"`
+	PrivacyLevel          int    `json:"privacy_level"`
+	DiscoverableDisabled  bool   `json:"discoverable_disabled"`
+	GuildScheduledEventId string `json:"guild_scheduled_event_id"`
+}
+
+type GuildScheduledEvent struct {
+	Id                 string         `json:"id"`
+	GuildId            string         `json:"guild_id"`
+	ChannelId          string         `json:"channel_id"`
+	CreatorId          string         `json:"creator_id"`
+	Name               string         `json:"name"`
+	Description        string         `json:"description,omitempty"`
+	ScheduledStartTime time.Time      `json:"scheduled_start_time"`
+	ScheduledEndTime   time.Time      `json:"scheduled_end_time"`
+	PrivacyLevel       int            `json:"privacy_level"`
+	Status             int            `json:"status"`
+	EntityType         int            `json:"entity_type"`
+	EntityId           string         `json:"entity_id"`
+	EntityMetadata     EntityMetadata `json:"entity_metadata"`
+	Creator            User           `json:"creator,omitempty"`
+	UserCount          int            `json:"user_count,omitempty"`
+	Image              string         `json:"image,omitempty"`
+}
+
+type EntityMetadata struct {
+	Location string `json:"location,omitempty"`
 }

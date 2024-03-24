@@ -1,0 +1,44 @@
+{
+    "t": "VOICE_STATE_UPDATE",
+    "s": 5,
+    "op": 0,
+    "d": {
+        "member": {
+            "user": {
+                "username": "Jabba the Bot",
+                "public_flags": 0,
+                "id": "890835642513248266",
+                "global_name": null,
+                "display_name": null,
+                "discriminator": "6239",
+                "bot": true,
+                "avatar_decoration_data": null,
+                "avatar": "573d0b357508aade7300c4d8aa70c7bd"
+            },
+            "roles": [
+                "891694618268270633",
+                "396798984183873546"
+            ],
+            "premium_since": null,
+            "pending": false,
+            "nick": null,
+            "mute": false,
+            "joined_at": "2021-09-26T14:36:03.913000+00:00",
+            "flags": 0,
+            "deaf": false,
+            "communication_disabled_until": null,
+            "avatar": null
+        },
+        "user_id": "890835642513248266",
+        "suppress": false,
+        "session_id": "b2193d9a09140721f2ab6c7bd7a7f04e",
+        "self_video": false,
+        "self_mute": false,
+        "self_deaf": false,
+        "request_to_speak_timestamp": null,
+        "mute": false,
+        "guild_id": "396781476533764117",
+        "deaf": false,
+        "channel_id": "1033483762639589376"
+    }
+}

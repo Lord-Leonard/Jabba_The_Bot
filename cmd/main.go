@@ -35,21 +35,80 @@ var resumeUrl string
 
 var heartbeat chan<- bool
 
+// state machine
+var joinRequested bool = false
+var guilds []structs.Guild
+var voiceStates map[string]structs.VoiceState
+
 func main() {
+	/* f, err := os.OpenFile("dev_log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+
+	log.SetOutput(f) */
+
 	loadDotenv()
 
+	initializeCommands()
+
+	voiceStates = make(map[string]structs.VoiceState)
+
+	wsUrl := getWebsocketUrl()
+
+	conn, _, _ = websocket.DefaultDialer.Dial(wsUrl, nil)
+	defer conn.Close()
+
+	log.Println("Initialization Completed")
+
+	for {
+		// read messages from ws connection
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			log.Fatalln("Read here :", err)
+			log.Fatalln(message)
+		}
+
+		log.Printf("Message recived: \n %s\n", message)
+
+		// parse messages into envelope
+		var websocketMessage structs.WebsocketMessage
+		err = json.Unmarshal(message, &websocketMessage)
+		if err != nil {
+			log.Println("parse:", err)
+		}
+
+		go processMessag(websocketMessage)
+	}
+}
+
+func initializeCommands() {
 	fmt.Println("Initializing commands")
+	var applicationCommands []structs.ApplicationCommand
 
 	url := "https://discord.com/api/v10/applications/" + os.Getenv("APPLICATIONID") + "/commands"
 
-	log.Println(url)
-
-	applicationCommand := structs.ApplicationCommand{
+	pingCommand := structs.ApplicationCommand{
 		Name:        "ping",
 		Type:        1,
 		Description: "Ping - Pong",
 	}
 
+	joinCommand := structs.ApplicationCommand{
+		Name:        "join",
+		Type:        1,
+		Description: "Jabba joins your voice Channel",
+	}
+
+	applicationCommands = append(applicationCommands, pingCommand, joinCommand)
+
+	for _, applicationCommand := range applicationCommands {
+		registerCommand(applicationCommand, url)
+	}
+}
+
+func registerCommand(applicationCommand structs.ApplicationCommand, url string) {
 	applicationCommandBytes, err := json.Marshal(applicationCommand)
 	if err != nil {
 		log.Fatalln("Parsing application command:", err)
@@ -64,8 +123,6 @@ func main() {
 
 	req.Header.Set("Content-Type", "application/json")
 
-	fmt.Println(req)
-
 	client = &http.Client{}
 
 	res, err := client.Do(req)
@@ -73,43 +130,21 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	log.Println(res)
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatalln(err)
-		return
 	}
 
-	fmt.Println(string(body))
-
-	wsUrl := getWebsocketUrl()
-
-	// TODO: handle error
-	conn, _, _ = websocket.DefaultDialer.Dial(wsUrl, nil)
-	defer conn.Close()
-
-	log.Println("Initialization Completed")
-
-	for {
-		// read messages from ws
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			log.Fatalln("Read here :", err)
-			log.Fatalln(message)
-			return
-		}
-		log.Println("Data recived")
-
-		// parse messages into envelope
-		var websocketMessage structs.WebsocketMessage
-		err = json.Unmarshal(message, &websocketMessage)
-		if err != nil {
-			log.Println("parse:", err)
-		}
-
-		processMessag(websocketMessage)
+	switch res.StatusCode {
+	case http.StatusBadRequest:
+		log.Fatalln(
+			"unable to create Command", applicationCommand.Name, "\n",
+			"Error: ", string(body),
+		)
+	case http.StatusOK:
+		log.Println("Command \"", applicationCommand.Name, "\" successfully Registered")
 	}
 }
 
@@ -141,64 +176,185 @@ func processMessag(websocketMessage structs.WebsocketMessage) {
 			var readyData structs.ReadyData
 			json.Unmarshal(*websocketMessage.D, &readyData)
 
+		case events.GuildCreated:
+			var guild structs.Guild
+			err := json.Unmarshal(*websocketMessage.D, &guild)
+			if err != nil {
+				log.Fatalln("Error parsing Guild Creation Data: ", err)
+			}
+
+			for _, voiceState := range guild.VoiceStates {
+				voiceStates[voiceState.UserId] = voiceState
+			}
+
+			guilds = append(guilds, guild)
+
 		case events.InteractionCreate:
-			log.Println("Processing Interaction")
+			processInteraction(websocketMessage)
 
-			var interactionData structs.InteractionCreateData
-			json.Unmarshal(*websocketMessage.D, &interactionData)
+		case events.VoiceStateUpdate:
+			var voiceState structs.VoiceState
+			err := json.Unmarshal(*websocketMessage.D, &voiceState)
+			if err != nil {
+				log.Fatalln("Error parsing voice state information", err)
+			}
 
-			prettyPrint(interactionData)
+			voiceStates[voiceState.UserId] = voiceState
 
+			prettyPrintMap(voiceStates)
+		}
+	}
+}
+
+func prettyPrintMap(m any) {
+	v := reflect.ValueOf(m)
+	if v.Kind() != reflect.Map {
+		fmt.Println("not a map!")
+		return
+	}
+
+	iter := v.MapRange()
+
+	for iter.Next() {
+		fmt.Println(iter.Key(), ": ", iter.Value())
+	}
+}
+
+func processInteraction(websocketMessage structs.WebsocketMessage) bool {
+	var err error
+	var url string
+	var interactionResponseDataJson []byte
+	var interactionResponseType int
+
+	log.Println("Processing Interaction")
+
+	fmt.Printf("%s", *websocketMessage.D)
+
+	var interactionData structs.InteractionCreateData
+	json.Unmarshal(*websocketMessage.D, &interactionData)
+
+	switch interactionData.Data.Name {
+	case "ping":
+		interactionResponseType = 4
+
+		interactionResponseData := structs.InteractionCallbackDataMessage{
+			TTS:     false,
+			Content: "Pong",
+			Embeds:  []structs.Embed{},
+			AllowMentions: structs.AllowMentions{
+				Parse: []string{},
+			},
+		}
+
+		interactionResponseDataJson, err = json.Marshal(interactionResponseData)
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+	case "join":
+		UserVoiceState, ok := voiceStates[interactionData.Member.User.Id]
+
+		if !ok {
 			interactionResponseData := structs.InteractionCallbackDataMessage{
 				TTS:     false,
-				Content: "Pong",
+				Content: "User not in Voice Channel. Connet to a voice Channel first.",
 				Embeds:  []structs.Embed{},
 				AllowMentions: structs.AllowMentions{
 					Parse: []string{},
 				},
 			}
 
-			interactionResponseDataJson, err := json.Marshal(interactionResponseData)
+			interactionResponseDataJson, err = json.Marshal(interactionResponseData)
 			if err != nil {
 				log.Fatalln(err)
 			}
+		}
 
-			interactionResponse := structs.InteractionResponse{
-				Type: 4,
-				Data: json.RawMessage(interactionResponseDataJson),
-			}
+		voiceStateData := structs.VoiceState{
+			GuildId:   interactionData.GuildId,
+			ChannelId: UserVoiceState.ChannelId,
+			SelfMute:  false,
+			SelfDeaf:  false,
+		}
 
-			url := fmt.Sprintf(
-				"https://discord.com/api/v10/interactions/%s/%s/callback",
-				interactionData.Id,
-				interactionData.Token,
-			)
+		voiceStateDataJson, err := json.Marshal(voiceStateData)
+		if err != nil {
+			log.Println("parse", err)
+		}
 
-			interactionResponseBytes, err := json.Marshal(interactionResponse)
-			if err != nil {
-				log.Fatalln("Parsing application command:", err)
-			}
+		voiceStateDataJsonRaw := json.RawMessage(voiceStateDataJson)
 
-			req, err := http.NewRequest("POST", url, bytes.NewBuffer(interactionResponseBytes))
-			if err != nil {
-				log.Fatalln("Creating application command request:", err)
-			}
+		payload := structs.WebsocketMessage{
+			OP: opcodes.VoiceStateUpdate,
+			D:  &voiceStateDataJsonRaw,
+			S:  nil,
+			T:  nil,
+		}
 
-			req.Header.Set("Content-Type", "application/json")
+		prettyPrint(payload)
 
-			fmt.Println(req)
+		err = conn.WriteJSON(payload)
+		if err != nil {
+			log.Fatalln(err)
+		}
 
-			res, err := client.Do(req)
-			if err != nil {
-				log.Fatalln(err)
-			}
+		joinRequested = true
 
-			log.Println(res)
-			defer res.Body.Close()
+		log.Println("Voice channel Join requestet")
+	}
 
-			log.Println("Interaction Response sent")
+	if len(interactionResponseDataJson) == 0 {
+		return true
+
+		interactionResponseType = 4
+
+		interactionResponseData := structs.InteractionCallbackDataMessage{
+			TTS:     false,
+			Content: "Not implemented yet ...",
+			Embeds:  []structs.Embed{},
+			AllowMentions: structs.AllowMentions{
+				Parse: []string{},
+			},
+		}
+
+		interactionResponseDataJson, err = json.Marshal(interactionResponseData)
+		if err != nil {
+			log.Fatalln(err)
 		}
 	}
+
+	interactionResponse := structs.InteractionResponse{
+		Type: interactionResponseType,
+		Data: json.RawMessage(interactionResponseDataJson),
+	}
+
+	url = fmt.Sprintf(
+		"https://discord.com/api/v10/interactions/%s/%s/callback",
+		interactionData.Id,
+		interactionData.Token,
+	)
+
+	interactionResponseBytes, err := json.Marshal(interactionResponse)
+	if err != nil {
+		log.Fatalln("Parsing application command:", err)
+	}
+
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(interactionResponseBytes))
+	if err != nil {
+		log.Fatalln("Creating application command request:", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer res.Body.Close()
+
+	log.Println("Interaction Response sent")
+	return false
 }
 
 func identify() {
@@ -255,7 +411,7 @@ func getWebsocketUrl() string {
 		log.Fatalln(err)
 	}
 
-	return responseStruct.URL + "/?v=10&encoding=json"
+	return responseStruct.Url + "/?v=10&encoding=json"
 }
 
 func sendHeartbeat() {
@@ -286,11 +442,11 @@ func setInterval(p any, interval time.Duration) chan<- bool {
 	return stopIt
 }
 
-func prettyPrint(readyData any) {
-	empJosn, err := json.MarshalIndent(readyData, "", "  ")
+func prettyPrint(data any) {
+	empJosn, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		log.Fatalln("error parsing readyData to string", err)
 	}
 
-	log.Println(string(empJosn))
+	fmt.Println(string(empJosn))
 }

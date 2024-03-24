@@ -1,0 +1,10 @@
+{
+    "t": "VOICE_SERVER_UPDATE",
+    "s": 6,
+    "op": 0,
+    "d": {
+        "token": "ef5e66f04861f5f9",
+        "guild_id": "396781476533764117",
+        "endpoint": "frankfurt4492.discord.media:443"
+    }
+}
