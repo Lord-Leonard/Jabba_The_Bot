@@ -18,15 +18,14 @@ var migrations = []migration{
 		sql: `
 CREATE TABLE IF NOT EXISTS track_metadata (
   video_id TEXT PRIMARY KEY,
-  provider TEXT NOT NULL,
   title TEXT,
   artist TEXT,
   album TEXT,
   cover_url TEXT,
+  cover_loacal_path TEXT,
   duration_sec INTEGER,
   fetched_at DATETIME NOT NULL,
-  last_accessed_at DATETIME NOT NULL,
-  source_version INTEGER NOT NULL DEFAULT 1
+  last_accessed_at DATETIME NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_track_metadata_last_accessed_at
@@ -34,6 +33,13 @@ CREATE INDEX IF NOT EXISTS idx_track_metadata_last_accessed_at
 
 CREATE INDEX IF NOT EXISTS idx_track_metadata_fetched_at
   ON track_metadata(fetched_at);
+`,
+	},
+	{
+		id:   2,
+		name: "fix_typo_in_track_metadata",
+		sql: `
+  ALTER TABLE track_metadata RENAME COLUMN cover_loacal_path TO cover_local_path;
 `,
 	},
 }

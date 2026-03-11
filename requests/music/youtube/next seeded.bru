@@ -1,0 +1,60 @@
+meta {
+  name: next seeded
+  type: http
+  seq: 7
+}
+
+post {
+  url: https://music.youtube.com/youtubei/v1/next?key=AIzaSyD_Owy59_EfAHrX36X301Q-897dV9_ayRo
+  body: json
+  auth: inherit
+}
+
+params:query {
+  key: AIzaSyD_Owy59_EfAHrX36X301Q-897dV9_ayRo
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+  Origin: https://music.youtube.com
+  Referer: https://music.youtube.com/
+}
+
+body:json {
+  {
+    "enablePersistentPlaylistPanel": true,
+    "tunerSettingValue": "AUTOMIX_SETTING_NORMAL",
+    "playlistId": "RDATiYvpl0qSJ9sdLI",
+    "params": "8gECeAGSBCNRUE9fdVhVUHBtczRkSURIaFBsYTJMREpFcXM4dWNFbzNGaoIFNkNoSlNSRUZVYVZsMmNHd3djVk5LT1hOa1RFa1lDeUlPQ2doR1lXMXBiR2xoY2hvQ1pXNCUzRA%3D%3D",
+    "index": 1,
+    "isAudioOnly": true,
+    "responsiveSignals": {
+      "videoInteraction": [
+        {
+          "queueImpress": {},
+          "videoId": "pl0qSJ9sdLI",
+          "queueIndex": 0
+        },
+        {
+          "queueImpress": {},
+          "videoId": "uwSJTkfuFbY",
+          "queueIndex": 1
+        },
+        {
+          "queueImpress": {},
+          "videoId": "8teSLYAiSa8",
+          "queueIndex": 2
+        }
+      ]
+    },
+    "queueContextParams": "CAEaEVJEQU1WTXBsMHFTSjlzZExJILmzq-v2kpMDKiNRUE9fdVhVUHBtczRkSURIaFBsYTJMREpFcXM4dWNFbzNGajILOHRlU0xZQWlTYTg6EDAxNzIwOEZBQTg1MjMzRjlKC3BsMHFTSjlzZExJUABaBggAEAEgAWIAcAF4AQ==",
+    }
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

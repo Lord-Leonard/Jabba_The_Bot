@@ -2,6 +2,7 @@ package webm
 
 import (
 	"Jabba_The_Bot/pkg/ebml"
+	"context"
 	"encoding/binary"
 	"fmt"
 	"io"
@@ -11,12 +12,15 @@ import (
 	"time"
 )
 
+type DemuxerOption func(*Demuxer)
+
 type Demuxer struct {
 	r *ebml.Reader
 	c io.Closer
 
 	EbmlHeader *ebml.Header
 	State      Segment
+	debugLog   *slog.Logger
 
 	mu                   sync.RWMutex
 	opMu                 sync.Mutex
@@ -464,35 +468,62 @@ type Seek struct {
 	Position uint64
 }
 
-func NewDemuxer(r io.Reader) (*Demuxer, error) {
-	ebmlReader := ebml.NewReader(r)
-
-	header, err := ebmlReader.ReadHeader()
-	if err != nil {
-		return nil, err
+func WithDebugLogger(logger *slog.Logger) DemuxerOption {
+	return func(d *Demuxer) {
+		d.debugLog = logger
 	}
+}
 
-	if header.DocType != "webm" {
-		return nil, fmt.Errorf("unknown DocType: %s", header.DocType)
-	}
-
+func NewDemuxer(r io.Reader, options ...DemuxerOption) (*Demuxer, error) {
 	var closer io.Closer
 	if c, ok := r.(io.Closer); ok {
 		closer = c
 	}
 
-	return &Demuxer{
-		r:                    ebmlReader,
+	demuxer := &Demuxer{
 		c:                    closer,
-		EbmlHeader:           header,
 		timestampScale:       1000000,
 		seekPoints:           make([]seekPoint, 0, 32),
 		currentClusterOffset: -1,
 		segmentDataStart:     -1,
-	}, nil
+	}
+
+	for _, option := range options {
+		if option == nil {
+			continue
+		}
+		option(demuxer)
+	}
+
+	ebmlReader := ebml.NewReader(r, ebml.WithDebugLogger(demuxer.debugLog))
+
+	header, err := ebmlReader.ReadHeader()
+	if err != nil {
+		return nil, err
+	}
+	if header.DocType != "webm" {
+		return nil, fmt.Errorf("unknown DocType: %s", header.DocType)
+	}
+
+	demuxer.r = ebmlReader
+	demuxer.EbmlHeader = header
+
+	return demuxer, nil
 
 }
 
+func (d *Demuxer) logDebug(msg string, args ...any) {
+	d.log(slog.LevelDebug, msg, args...)
+}
+
+func (d *Demuxer) log(level slog.Level, msg string, args ...any) {
+	if d == nil || d.debugLog == nil {
+		return
+	}
+	d.debugLog.Log(context.Background(), level, msg, args...)
+}
+
+// TODO: should it have that? Is that a demuxer concern?
 func (d *Demuxer) Close() error {
 	var closeErr error
 	d.closeOnce.Do(func() {
@@ -678,7 +709,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				d.segmentStartSet = true
 				d.mu.Unlock()
 			}
-			slog.Debug("Segment",
+			d.logDebug("Segment",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -689,7 +720,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 		case ID_SeekHead:
 			sh := &SeekHead{}
 			d.State.SeekHead = append(d.State.SeekHead, sh)
-			slog.Debug("SeekHead",
+			d.logDebug("SeekHead",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -699,7 +730,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			seekHead := d.State.SeekHead[len(d.State.SeekHead)-1]
 			seekHead.Seek = append(seekHead.Seek, &Seek{})
 
-			slog.Debug("Seek",
+			d.logDebug("Seek",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -715,7 +746,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			seek.ID = data
 
-			slog.Debug("Seek ID",
+			d.logDebug("Seek ID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -732,7 +763,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			seek.Position = data
 
-			slog.Debug("Seek Position",
+			d.logDebug("Seek Position",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -741,7 +772,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 		// --- Segment/Info
 
 		case ID_Info:
-			slog.Debug("Info",
+			d.logDebug("Info",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -754,7 +785,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.SegmentUUID = data
 
-			slog.Debug("Info SegmentUUID",
+			d.logDebug("Info SegmentUUID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -768,7 +799,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.SegmentFilename = data
 
-			slog.Debug("Info SegmentFilename",
+			d.logDebug("Info SegmentFilename",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -781,7 +812,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.PrevUUID = data
 
-			slog.Debug("Info PrevUUID",
+			d.logDebug("Info PrevUUID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -795,7 +826,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.PrevFilename = data
 
-			slog.Debug("Info PrevFilename",
+			d.logDebug("Info PrevFilename",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -808,7 +839,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.NextUUID = data
 
-			slog.Debug("Info NextUUID",
+			d.logDebug("Info NextUUID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -822,7 +853,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.NextFilename = data
 
-			slog.Debug("Info NextFilename",
+			d.logDebug("Info NextFilename",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -835,7 +866,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.SegmentFamily = data
 
-			slog.Debug("Info SegmentFamily",
+			d.logDebug("Info SegmentFamily",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -844,7 +875,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_ChapterTranslate:
 			d.State.Info.ChapterTranslate = ChapterTranslate{}
-			slog.Debug("Info ChapterTranslate",
+			d.logDebug("Info ChapterTranslate",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -857,7 +888,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.ChapterTranslate.ID = data
 
-			slog.Debug("Info ChapterTranslate ID",
+			d.logDebug("Info ChapterTranslate ID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -871,7 +902,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.ChapterTranslate.Codec = data
 
-			slog.Debug("Info ChapterTranslate Codec",
+			d.logDebug("Info ChapterTranslate Codec",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -884,7 +915,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.ChapterTranslate.EditionUID = data
 
-			slog.Debug("Info ChapterTranslate EditionUID",
+			d.logDebug("Info ChapterTranslate EditionUID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -901,7 +932,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			d.durationSet = false
 			d.mu.Unlock()
 
-			slog.Debug("Info TimestampScale",
+			d.logDebug("Info TimestampScale",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -917,7 +948,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			d.durationSet = false
 			d.mu.Unlock()
 
-			slog.Debug("Info Duration",
+			d.logDebug("Info Duration",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%f", data),
@@ -930,7 +961,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.DateUTC = data
 
-			slog.Debug("Info DateUTC",
+			d.logDebug("Info DateUTC",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -943,7 +974,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.Title = data
 
-			slog.Debug("Info Title",
+			d.logDebug("Info Title",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -956,7 +987,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.MuxingApp = data
 
-			slog.Debug("Info MuxingApp",
+			d.logDebug("Info MuxingApp",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -969,7 +1000,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Info.WritingApp = data
 
-			slog.Debug("Info WritingApp",
+			d.logDebug("Info WritingApp",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -979,7 +1010,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_Tracks:
 			d.State.Tracks = Tracks{}
-			slog.Debug("Tracks",
+			d.logDebug("Tracks",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -987,7 +1018,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_TrackEntry:
 			d.State.Tracks.TrackEntries = append(d.State.Tracks.TrackEntries, &TrackEntry{})
-			slog.Debug(
+			d.logDebug(
 				fmt.Sprintf("TrackEntry #%d", len(d.State.Tracks.TrackEntries)-1),
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
@@ -1003,7 +1034,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			trackEntry.Number = data
 
-			slog.Debug("TrackEntry Number",
+			d.logDebug("TrackEntry Number",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1018,7 +1049,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			trackEntry.UID = data
 
-			slog.Debug("TrackEntry UID",
+			d.logDebug("TrackEntry UID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1031,7 +1062,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
-			slog.Debug("TrackEntry Type",
+			d.logDebug("TrackEntry Type",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1044,7 +1075,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			if err != nil {
 				return nil, err
 			}
-			slog.Debug("TrackEntry Name",
+			d.logDebug("TrackEntry Name",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", data,
@@ -1059,7 +1090,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				d.currentClusterOffset = offset
 				d.mu.Unlock()
 			}
-			slog.Debug("Cluster",
+			d.logDebug("Cluster",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -1078,7 +1109,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				d.addSeekPoint(int64(data), clusterOffset)
 			}
 
-			slog.Debug("Cluster Timestamp",
+			d.logDebug("Cluster Timestamp",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1091,7 +1122,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.Position = data
 
-			slog.Debug("Cluster Position",
+			d.logDebug("Cluster Position",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1104,7 +1135,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.PrevSize = data
 
-			slog.Debug("Cluster PrevSize",
+			d.logDebug("Cluster PrevSize",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1116,7 +1147,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 
-			//slog.Debug("Cluster SimpleBlock",
+			//d.logDebug("Cluster SimpleBlock",
 			//	"ID", fmt.Sprintf("0x%02x", id),
 			//	"size", size,
 			//	"data", fmt.Sprintf("%d", packet),
@@ -1128,7 +1159,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_BlockGroup:
 			d.State.Cluster.BlockGroup = BlockGroup{}
-			slog.Debug("BlockGroup",
+			d.logDebug("BlockGroup",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -1140,7 +1171,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 
-			slog.Debug("Cluster Block",
+			d.logDebug("Cluster Block",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", packet),
@@ -1152,7 +1183,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_BlockAdditions:
 			d.State.Cluster.BlockGroup.BlockAdditions = BlockAdditions{}
-			slog.Debug("BlockAdditions",
+			d.logDebug("BlockAdditions",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -1160,7 +1191,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_BlockMore:
 			d.State.Cluster.BlockGroup.BlockAdditions.BlockMore = BlockMore{}
-			slog.Debug("BlockMore",
+			d.logDebug("BlockMore",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -1173,7 +1204,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.BlockGroup.BlockAdditions.BlockMore.BlockAdditional = data
 
-			slog.Debug("Cluster BlockGroup BlockAdditions BlockMore BlockAdditional",
+			d.logDebug("Cluster BlockGroup BlockAdditions BlockMore BlockAdditional",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -1186,7 +1217,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.BlockGroup.BlockAdditions.BlockMore.BlockAddID = data
 
-			slog.Debug("Cluster BlockGroup BlockAdditions BlockMore BlockAddID",
+			d.logDebug("Cluster BlockGroup BlockAdditions BlockMore BlockAddID",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1199,7 +1230,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.BlockGroup.BlockDuration = data
 
-			slog.Debug("Cluster BlockGroup BlockDuration",
+			d.logDebug("Cluster BlockGroup BlockDuration",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1212,7 +1243,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.BlockGroup.ReferencePriority = data
 
-			slog.Debug("Cluster BlockGroup ReferencePriority",
+			d.logDebug("Cluster BlockGroup ReferencePriority",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1225,7 +1256,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.BlockGroup.ReferenceBlock = data
 
-			slog.Debug("Cluster BlockGroup ReferenceBlock",
+			d.logDebug("Cluster BlockGroup ReferenceBlock",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1238,7 +1269,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.BlockGroup.CodecState = data
 
-			slog.Debug("Cluster BlockGroup CodecState",
+			d.logDebug("Cluster BlockGroup CodecState",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%08b", data),
@@ -1251,7 +1282,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			}
 			d.State.Cluster.BlockGroup.DiscardPadding = data
 
-			slog.Debug("Cluster BlockGroup DiscardPadding",
+			d.logDebug("Cluster BlockGroup DiscardPadding",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1260,7 +1291,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 		// --- Cues
 		case ID_Cues:
 			d.State.Cues = Cues{}
-			slog.Debug("Cues",
+			d.logDebug("Cues",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)
@@ -1268,7 +1299,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_CuePoint:
 			d.State.Cues.CuesPoint = CuesPoint{}
-			slog.Debug("CuePoint")
+			d.logDebug("CuePoint")
 			continue
 
 		case ID_CueTime:
@@ -1277,12 +1308,12 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 			d.State.Cues.CuesPoint.CueTime = data
-			slog.Debug("CueTime", "data", fmt.Sprintf("%d", data))
+			d.logDebug("CueTime", "data", fmt.Sprintf("%d", data))
 
 		case ID_CueTrackPositions:
 			cueTrackPosition := &CueTrackPosition{}
 			d.State.Cues.CuesPoint.CueTrackPositions = append(d.State.Cues.CuesPoint.CueTrackPositions, cueTrackPosition)
-			slog.Debug("CueTrackPositions", "size", size)
+			d.logDebug("CueTrackPositions", "size", size)
 			continue
 
 		case ID_CueTrack:
@@ -1291,7 +1322,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 			d.State.Cues.CuesPoint.CueTrackPositions[len(d.State.Cues.CuesPoint.CueTrackPositions)-1].CueTrack = data
-			slog.Debug("CueTrack", "data", fmt.Sprintf("%d", data))
+			d.logDebug("CueTrack", "data", fmt.Sprintf("%d", data))
 
 		case ID_CueClusterPosition:
 			data, err := d.r.ReadUInt(size)
@@ -1307,7 +1338,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 			if segmentStartSet {
 				d.addSeekPoint(int64(cueTime), segmentStart+int64(data))
 			}
-			slog.Debug("CueClusterPosition", "data", fmt.Sprintf("%d", data))
+			d.logDebug("CueClusterPosition", "data", fmt.Sprintf("%d", data))
 
 		case ID_CueRelativePosition:
 			data, err := d.r.ReadUInt(size)
@@ -1315,7 +1346,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 			d.State.Cues.CuesPoint.CueTrackPositions[len(d.State.Cues.CuesPoint.CueTrackPositions)-1].CueRelativePosition = data
-			slog.Debug("CuePoint CueTrackPositions CueRelativePosition",
+			d.logDebug("CuePoint CueTrackPositions CueRelativePosition",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1327,7 +1358,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 			d.State.Cues.CuesPoint.CueTrackPositions[len(d.State.Cues.CuesPoint.CueTrackPositions)-1].CueDuration = data
-			slog.Debug("CuePoint CueTrackPositions CueDuration",
+			d.logDebug("CuePoint CueTrackPositions CueDuration",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1339,7 +1370,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 			d.State.Cues.CuesPoint.CueTrackPositions[len(d.State.Cues.CuesPoint.CueTrackPositions)-1].CueBlockNumber = data
-			slog.Debug("CuePoint CueTrackPositions CueBlockNumber",
+			d.logDebug("CuePoint CueTrackPositions CueBlockNumber",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1351,7 +1382,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 			d.State.Cues.CuesPoint.CueTrackPositions[len(d.State.Cues.CuesPoint.CueTrackPositions)-1].CueCodecState = data
-			slog.Debug("CuePoint CueTrackPositions CueCodecState",
+			d.logDebug("CuePoint CueTrackPositions CueCodecState",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 				"data", fmt.Sprintf("%d", data),
@@ -1359,7 +1390,7 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 
 		case ID_CueReference:
 			d.State.Cues.CuesPoint.CueTrackPositions[len(d.State.Cues.CuesPoint.CueTrackPositions)-1].CueReference = CueReference{}
-			slog.Debug("CuePoint CueTrackPositions CueReference")
+			d.logDebug("CuePoint CueTrackPositions CueReference")
 			continue
 
 		case ID_CueRefTime:
@@ -1368,12 +1399,12 @@ func (d *Demuxer) provideFrameLocked() ([]byte, error) {
 				return nil, err
 			}
 			d.State.Cues.CuesPoint.CueTrackPositions[len(d.State.Cues.CuesPoint.CueTrackPositions)-1].CueReference.CueRefTime = data
-			slog.Debug("CuePoint CueTrackPositions CueReference CueRefTime",
+			d.logDebug("CuePoint CueTrackPositions CueReference CueRefTime",
 				"ID", fmt.Sprintf("0x%02x", id),
 			)
 
 		default:
-			slog.Debug("Packet",
+			d.logDebug("Packet",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"size", size,
 			)

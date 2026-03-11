@@ -1,0 +1,50 @@
+{
+  "enablePersistentPlaylistPanel": true,
+  "tunerSettingValue": "AUTOMIX_SETTING_NORMAL",
+  "playlistId": "RDATiXvjGnX4mXLLJw",
+  "params": "ggVAQ2hKU1JFRlVhVmgyYWtkdVdEUnRXRXhNU25jWUN5SVRDZzFPWlhVZ1pXNTBaR1ZqYTJWdUdnSmtaUSUzRCUzRA%3D%3D",
+  "loggingContext": {
+    "vssLoggingContext": {
+      "serializedContextData": "GhJSREFUaVh2akduWDRtWExMSnc%3D"
+    }
+  },
+  "index": 1,
+  "isAudioOnly": true,
+  "queueContextParams": "CAIaEVJEQU1WTWpHblg0bVhMTEp3IJ7S1oOClZMDMgt1UmJoZzFKdnFaZzoQMDE3MjA4RkFBODUyMzNGOUIRUkRBTVZNakduWDRtWExMSndQAVoECAAQAWIAcAF4AQ==",
+  "context": {
+    "client": {
+      "hl": "de",
+      "gl": "DE",
+      "remoteHost": "2003:e9:2720:57ab:34:4e35:9af:77a0",
+      "deviceMake": "",
+      "deviceModel": "",
+      "visitorData": "CgswYkdXa2Fua3FmTSjGx7_NBjIKCgJERRIEEgAgQA%3D%3D",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36,gzip(gfe)",
+      "clientName": "WEB_REMIX",
+      "clientVersion": "1.20260304.03.00",
+      "osName": "Windows",
+      "osVersion": "10.0",
+      "originalUrl": "https://music.youtube.com/?cbrd=1",
+      "platform": "DESKTOP",
+      "clientFormFactor": "UNKNOWN_FORM_FACTOR",
+      "configInfo": {
+        "appInstallData": "CMbHv80GEPCdzxwQy_nQHBDQwoATEPyyzhwQgc3OHBDI988cELyk0BwQzN-uBRCfz4ATENvU0BwQpuvQHBCZ-tAcEOvm0BwQprbQHBDa984cEIv3zxwQvZmwBRC9irAFEMGq0BwQmN3QHBDGxs8cEJS20BwQndCAExC45M4cEImwzhwQlP6wBRDevM4cEJmNsQUQvbauBRCUg9AcEJn50BwQ_PbQHBDU_9AcEK7WzxwQh6zOHBDBj9AcEIzpzxwQ9quwBRDE0oATEJX3zxwQu9nOHBDxtNAcENTu0BwQntCwBRD389AcKkRDQU1TTHhVcy1acS1ETGlVRXBRQ25BNzVGWjBGNUxMd0N6S19YLW5WQlFQTl93WEx0d2I3SnJia0JzbVZCTV84QVIwSDAA"
+      },
+      "utcOffsetMinutes": 60,
+      "timeZone": "Europe/Berlin",
+      "browserName": "Chrome",
+      "browserVersion": "145.0.0.0",
+      "screenWidthPoints": 958,
+      "screenHeightPoints": 945,
+      "screenPixelDensity": 2
+    },
+    "user": {
+      "lockedSafetyMode": false
+    },
+    "request": {
+      "useSsl": true,
+      "internalExperimentFlags": [],
+      "consistencyTokenJars": []
+    }
+  }
+}

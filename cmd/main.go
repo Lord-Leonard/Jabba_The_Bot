@@ -26,7 +26,7 @@ func main() {
 	defer trace.Stop()
 
 	discordBot := discord.New()
-	youtubeProvider := provider.NewYouTubeProvider()
+	youtubeProvider, _ := provider.NewYouTubeProvider(nil)
 	handlers := NewHandlers(youtubeProvider)
 
 	pingCommand := &discord.Command{

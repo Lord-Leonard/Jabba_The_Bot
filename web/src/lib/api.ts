@@ -18,6 +18,52 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return (await response.json()) as T
 }
 
+type NowPlayingApiResponse = {
+  id?: string
+  title?: string
+  source?: string
+  coverUrl?: string
+  position?: number
+  duration?: number
+  videoId?: string
+  Title?: string
+  VideoID?: string
+  URL?: string
+  Position?: number
+  Duration?: number
+  CoverArtURL?: string
+}
+
+function toSeconds(value: number | undefined): number | undefined {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return undefined
+  }
+  // Go time.Duration is encoded as nanoseconds in JSON.
+  if (value > 1_000_000_000) {
+    return Math.floor(value / 1_000_000_000)
+  }
+  return value
+}
+
+function normalizeNowPlaying(payload: NowPlayingApiResponse | null): NowPlaying | null {
+  if (!payload) {
+    return null
+  }
+
+  const videoId = payload.videoId ?? payload.VideoID
+  const title = payload.title ?? payload.Title
+  const source = payload.source ?? payload.URL
+
+  return {
+    id: payload.id ?? videoId,
+    title,
+    source,
+    coverUrl: payload.coverUrl ?? payload.CoverArtURL ?? (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : undefined),
+    position: toSeconds(payload.position ?? payload.Position),
+    duration: toSeconds(payload.duration ?? payload.Duration),
+  }
+}
+
 export function getState() {
   return request<BotState>('/api/state')
 }
@@ -27,7 +73,7 @@ export function getQueue() {
 }
 
 export function getNowPlaying() {
-  return request<NowPlaying | null>('/api/now-playing')
+  return request<NowPlayingApiResponse | null>('/api/now-playing').then(normalizeNowPlaying)
 }
 
 export function search(q: string, limit = 10) {

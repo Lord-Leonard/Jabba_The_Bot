@@ -1,9 +1,10 @@
 package provider
 
 import (
-	searchadapter "Jabba_The_Bot/internal/adapters/outbound/music"
+	"Jabba_The_Bot/internal/music/domain"
+	searchadapter "Jabba_The_Bot/internal/music/provider/youtube"
 	"Jabba_The_Bot/internal/music/stream"
-	youtubemusic "Jabba_The_Bot/pkg/youtube/music"
+	youtubemusic "Jabba_The_Bot/pkg/youtube"
 	"context"
 	"errors"
 	"fmt"
@@ -25,6 +26,7 @@ type YouTubeProvider struct {
 
 	callbackMu   sync.RWMutex
 	onFirstBytes func(videoID, title string, duration time.Duration, cacheHit bool)
+	ytDlpPath    string
 }
 
 var (
@@ -35,68 +37,36 @@ var (
 	prefetchInFlight = make(map[string]struct{})
 )
 
-func NewYouTubeProvider() *YouTubeProvider {
-	client := youtubemusic.NewClient()
+// TODO: Interface for youtubemusic.Client?
+func NewYouTubeProvider(client *youtubemusic.Client) (*YouTubeProvider, error) {
+	wd, _ := os.Getwd()
+	ytDlpPath, err := resolveYtDlpPath(wd)
+	if err != nil {
+		return nil, err
+	}
+
 	return &YouTubeProvider{
 		client:         client,
-		searchProvider: searchadapter.NewYouTubeSearchProvider(client),
-	}
+		searchProvider: searchadapter.NewYouTubeSearcher(client),
+		ytDlpPath:      ytDlpPath,
+	}, nil
 }
 
-func (p *YouTubeProvider) Search(ctx context.Context, query string) ([]Track, error) {
+func (p *YouTubeProvider) Search(ctx context.Context, query string) ([]domain.Track, error) {
 	results, err := p.searchProvider.Search(ctx, query, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	tracks := make([]Track, len(results))
+	tracks := make([]domain.Track, len(results))
 	for i, res := range results {
-		tracks[i] = Track{
+		tracks[i] = domain.Track{
 			Title:    res.Title,
 			VideoID:  res.VideoID,
 			URL:      "https://www.youtube.com/watch?v=" + res.VideoID,
 			provider: p,
 		}
 	}
-	return tracks, nil
-}
-
-func (p *YouTubeProvider) Recommend(ctx context.Context, seedVideoID string, limit int) ([]Track, error) {
-	if strings.TrimSpace(seedVideoID) == "" {
-		return nil, fmt.Errorf("seed video ID cannot be empty")
-	}
-	if limit <= 0 {
-		limit = 10
-	}
-
-	results, err := p.client.GetNextSongs(ctx, seedVideoID)
-	if err != nil {
-		return nil, err
-	}
-
-	tracks := make([]Track, 0, limit)
-	seen := map[string]struct{}{seedVideoID: {}}
-
-	for _, res := range results {
-		if res.VideoID == "" {
-			continue
-		}
-		if _, ok := seen[res.VideoID]; ok {
-			continue
-		}
-		seen[res.VideoID] = struct{}{}
-
-		tracks = append(tracks, Track{
-			Title:    res.Title,
-			VideoID:  res.VideoID,
-			URL:      "https://www.youtube.com/watch?v=" + res.VideoID,
-			provider: p,
-		})
-		if len(tracks) >= limit {
-			break
-		}
-	}
-
 	return tracks, nil
 }
 
@@ -312,7 +282,7 @@ func (p *YouTubeProvider) HasCachedTrack(videoID string) bool {
 	return isCacheReady(cachePath)
 }
 
-func (p *YouTubeProvider) Prefetch(ctx context.Context, track Track) error {
+func (p *YouTubeProvider) Prefetch(ctx context.Context, track domain.Track) error {
 	if strings.TrimSpace(track.VideoID) == "" {
 		return fmt.Errorf("prefetch requires a valid video ID")
 	}

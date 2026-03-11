@@ -1,0 +1,59 @@
+meta {
+  name: search 2
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://amp-api-edge.music.apple.com/v1/catalog/de/search?term=never gonna give you up&types=activities%2Calbums%2Capple-curators%2Cartists%2Ccurators%2Ceditorial-items%2Cmusic-movies%2Cmusic-videos%2Cplaylists%2Crecord-labels%2Csongs%2Cstations%2Ctv-episodes%2Cuploaded-videos&platform=web&extend=artistUrl&art%5Bmusic-videos%3Aurl%5D=c&art%5Burl%5D=f&fields%5Balbums%5D=artistName%2CartistUrl%2Cartwork%2CcontentRating%2CeditorialArtwork%2CeditorialNotes%2Cname%2CplayParams%2CreleaseDate%2Curl%2CtrackCount&include%5Bmusic-videos%5D=artists&include%5Bsongs%5D=artists&l=en-US&limit=21&omit%5Bresource%5D=autos&relate%5Balbums%5D=artists&relate%5Bsongs%5D=albums&with=lyricHighlights%2Clyrics%2CnaturalLanguage%2CserverBubbles%2Csubtitles
+  body: none
+  auth: inherit
+}
+
+params:query {
+  term: never gonna give you up
+  types: activities%2Calbums%2Capple-curators%2Cartists%2Ccurators%2Ceditorial-items%2Cmusic-movies%2Cmusic-videos%2Cplaylists%2Crecord-labels%2Csongs%2Cstations%2Ctv-episodes%2Cuploaded-videos
+  platform: web
+  extend: artistUrl
+  art%5Bmusic-videos%3Aurl%5D: c
+  art%5Burl%5D: f
+  fields%5Balbums%5D: artistName%2CartistUrl%2Cartwork%2CcontentRating%2CeditorialArtwork%2CeditorialNotes%2Cname%2CplayParams%2CreleaseDate%2Curl%2CtrackCount
+  include%5Bmusic-videos%5D: artists
+  include%5Bsongs%5D: artists
+  l: en-US
+  limit: 21
+  omit%5Bresource%5D: autos
+  relate%5Balbums%5D: artists
+  relate%5Bsongs%5D: albums
+  with: lyricHighlights%2Clyrics%2CnaturalLanguage%2CserverBubbles%2Csubtitles
+  ~fields%5Bartists%5D: url%2Cname%2Cartwork
+  ~format%5Bresources%5D: map
+  ~include%5Balbums%5D: artists
+  ~include%5Bstations%5D: radio-show
+  ~types: songs
+}
+
+headers {
+  dnt: 1
+  origin: https://music.apple.com
+  referer: https://music.apple.com/
+  user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+  accept: */*
+  ~accept-language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+  ~authorization: Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNzcwODcxODY3LCJleHAiOjE3NzgxMjk0NjcsInJvb3RfaHR0cHNfb3JpZ2luIjpbImFwcGxlLmNvbSJdfQ.XQrh_J4o8liZFxSuQ8-oO6Yv4UeLBNAXBqaf2_fRUS6yOMPK5A9QMcUehNgQjODaG9977qloHIiQokHqUxet6A
+  ~cache-control: no-cache
+  ~Cookie: s_fid=4C86FC056EF6FF3C-16501CB76CE7EE68; s_vi=[CS]v1|34D0437ADD3B5506-60000EFD834DDF92[CE]; geo=DE; s_cc=true; s_sq=%5B%5BB%5D%5D; s_pathLength=developer%3D9%2C
+  ~pragma: no-cache
+  ~priority: u=1, i
+  ~sec-ch-ua: "Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"
+  ~sec-ch-ua-mobile: ?0
+  ~sec-ch-ua-platform: "Windows"
+  ~sec-fetch-dest: empty
+  ~sec-fetch-mode: cors
+  ~sec-fetch-site: same-site
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

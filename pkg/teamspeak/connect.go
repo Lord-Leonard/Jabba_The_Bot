@@ -3,6 +3,7 @@ package teamspeak
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"Jabba_The_Bot/pkg/teamspeak/internal/client"
 )
@@ -16,6 +17,7 @@ type Config struct {
 	Platform      string
 	HWID          string
 	HashcashLevel int
+	Logger        *slog.Logger
 }
 
 func DefaultConfig() Config {
@@ -25,6 +27,7 @@ func DefaultConfig() Config {
 		Platform:      "Windows",
 		HWID:          "+LyYqbDqOvEEpN5pdAbF8/v5kZ0=",
 		HashcashLevel: 8,
+		Logger:        slog.Default(),
 	}
 }
 
@@ -37,6 +40,7 @@ func mapConfig(cfg Config) client.Config {
 		Platform:      cfg.Platform,
 		HWID:          cfg.HWID,
 		HashcashLevel: cfg.HashcashLevel,
+		Logger:        cfg.Logger,
 	}
 }
 

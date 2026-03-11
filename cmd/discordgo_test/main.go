@@ -62,7 +62,7 @@ func main() {
 	// packages and voice states.
 	dg.Identify.Intents = discordgo.IntentsGuilds | discordgo.IntentsGuildMessages | discordgo.IntentsGuildVoiceStates
 
-	// Open the websocket and begin listening.
+	// Provide the websocket and begin listening.
 	err = dg.Open()
 	if err != nil {
 		fmt.Println("Error opening Discord session: ", err)

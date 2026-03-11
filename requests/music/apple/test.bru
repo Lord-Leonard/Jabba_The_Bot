@@ -1,0 +1,25 @@
+meta {
+  name: test
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://amp-api.music.apple.com/v1/catalog/us/songs/1452434833
+  body: none
+  auth: bearer
+}
+
+headers {
+  Origin: https://music.apple.com
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
+}
+
+auth:bearer {
+  token: eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IldlYlBsYXlLaWQifQ.eyJpc3MiOiJBTVBXZWJQbGF5IiwiaWF0IjoxNzcwODcxODY3LCJleHAiOjE3NzgxMjk0NjcsInJvb3RfaHR0cHNfb3JpZ2luIjpbImFwcGxlLmNvbSJdfQ.XQrh_J4o8liZFxSuQ8-oO6Yv4UeLBNAXBqaf2_fRUS6yOMPK5A9QMcUehNgQjODaG9977qloHIiQokHqUxet6A
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

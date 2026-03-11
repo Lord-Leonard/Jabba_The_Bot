@@ -18,7 +18,8 @@ export function HeaderSearch({
     onSubmitSearch: SubmitEventHandler<HTMLFormElement>
 }) {
     return (
-        <header className="z-20 border-b border-black/35 bg-[#0b0b10]/55 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.35)] backdrop-blur-md">
+        <header
+            className="z-20 border-b border-black/35 bg-[#0b0b10]/55 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.35)] backdrop-blur-md">
             <form className="mx-auto w-full max-w-140" onSubmit={onSubmitSearch}>
                 <div className="relative w-full">
                     <Search
@@ -72,6 +73,15 @@ function HomeRouteLayout({
 
 export default HomeRouteLayout
 
+function isGoogleusercontentUrl(url: string) {
+    try {
+        const parsed = new URL(url, window.location.origin)
+        return parsed.hostname.endsWith('googleusercontent.com')
+    } catch {
+        return false
+    }
+}
+
 export function BottomNowPlayingDock({
                                          coverUrl,
                                          title,
@@ -98,7 +108,8 @@ export function BottomNowPlayingDock({
                     aria-label="Open now playing"
                 >
                     <div className="h-11 w-11 overflow-hidden rounded-md bg-white/10">
-                        <img src={coverUrl} alt="" className="h-full w-full object-cover opacity-90"/>
+                        <img src={coverUrl} alt="" referrerPolicy="no-referrer"
+                             className="h-full w-full object-cover opacity-90"/>
                     </div>
                     <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{title}</p>
@@ -203,22 +214,22 @@ function PlaybackControl({
             <div className="w-full flex items-center flex-row gap-4">
                 <span>{formatClock(safePosition)}</span>
                 <Slider
-                        value={[sliderValue]}
-                        max={sliderMax}
-                        min={0}
-                        step={1}
-                        disabled={isCommandPending || !canSeek}
-                        onValueChange={(value) => {
-                            setIsScrubbing(true)
-                            setSliderValue(Math.max(0, Math.min(value[0] ?? 0, sliderMax)))
-                        }}
-                        onValueCommit={(value) => {
-                            const nextPositionSec = Math.max(0, Math.min(value[0] ?? 0, sliderMax))
-                            setSliderValue(nextPositionSec)
-                            setIsScrubbing(false)
-                            onSeek(nextPositionSec)
-                        }}
-                        className="**:data-[slot=slider-track]:bg-white/30 **:data-[slot=slider-range]:bg-white **:data-[slot=slider-thumb]:border-white **:data-[slot=slider-thumb]:bg-white"
+                    value={[sliderValue]}
+                    max={sliderMax}
+                    min={0}
+                    step={1}
+                    disabled={isCommandPending || !canSeek}
+                    onValueChange={(value) => {
+                        setIsScrubbing(true)
+                        setSliderValue(Math.max(0, Math.min(value[0] ?? 0, sliderMax)))
+                    }}
+                    onValueCommit={(value) => {
+                        const nextPositionSec = Math.max(0, Math.min(value[0] ?? 0, sliderMax))
+                        setSliderValue(nextPositionSec)
+                        setIsScrubbing(false)
+                        onSeek(nextPositionSec)
+                    }}
+                    className="**:data-[slot=slider-track]:bg-white/30 **:data-[slot=slider-range]:bg-white **:data-[slot=slider-thumb]:border-white **:data-[slot=slider-thumb]:bg-white"
                 />
                 <span>{hasKnownDuration ? formatClock(durationSec) : '--:--'}</span>
             </div>
@@ -326,11 +337,17 @@ export function Hero({
     }
 
     useEffect(() => {
+        if (isGoogleusercontentUrl(src)) {
+            setBgColor('rgb(20,20,20)')
+            setBgColorMid('rgb(10,10,10)')
+            return
+        }
+
         const fac = new FastAverageColor()
         let cancelled = false
 
         fac
-            .getColorAsync(src, {crossOrigin: 'anonymous'})
+            .getColorAsync(src, { crossOrigin: 'anonymous'})
             .then((color) => {
                 if (cancelled) return
                 const [r, g, b] = color.value
@@ -379,7 +396,7 @@ export function Hero({
                         <img
                             src={src}
                             alt={title}
-                            crossOrigin="anonymous"
+                            referrerPolicy="no-referrer"
                             className="aspect-square h-full w-auto max-h-full max-w-full rounded-[1.75rem] object-cover shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
                         />
                     </div>
@@ -393,10 +410,14 @@ export function Hero({
                         positionSec={positionSec}
                         durationSec={durationSec}
                         isCommandPending={isCommandPending}
-                        onTogglePlayPause={onTogglePlayPause ?? (() => {})}
-                        onSkip={onSkip ?? (() => {})}
-                        onRestart={onRestart ?? (() => {})}
-                        onSeek={onSeek ?? (() => {})}
+                        onTogglePlayPause={onTogglePlayPause ?? (() => {
+                        })}
+                        onSkip={onSkip ?? (() => {
+                        })}
+                        onRestart={onRestart ?? (() => {
+                        })}
+                        onSeek={onSeek ?? (() => {
+                        })}
                     />
                 </div>
             </section>
@@ -423,10 +444,12 @@ export function Hero({
                                         key={item.id ?? `${item.title ?? item.source ?? 'track'}-${index}`}
                                         className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/25 px-3 py-2"
                                     >
-                                        <span className="w-6 shrink-0 text-right text-xs text-white/55">{index + 1}</span>
+                                        <span
+                                            className="w-6 shrink-0 text-right text-xs text-white/55">{index + 1}</span>
                                         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-white/8">
                                             {item.coverUrl ? (
-                                                <img src={item.coverUrl} alt="" className="h-full w-full object-cover"/>
+                                                <img src={item.coverUrl} alt="" referrerPolicy="no-referrer"
+                                                     className="h-full w-full object-cover"/>
                                             ) : null}
                                         </div>
                                         <div className="min-w-0 flex-1">

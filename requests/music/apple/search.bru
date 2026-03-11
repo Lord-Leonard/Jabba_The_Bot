@@ -1,0 +1,50 @@
+meta {
+  name: search
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://amp-api-edge.music.apple.com/v1/catalog/us/search?art%5Bmusic-videos%3Aurl%5D=c&art%5Burl%5D=f&extend=artistUrl&fields%5Balbums%5D=artistName%2CartistUrl%2Cartwork%2CcontentRating%2CeditorialArtwork%2CeditorialNotes%2Cname%2CplayParams%2CreleaseDate%2Curl%2CtrackCount&fields%5Bartists%5D=url%2Cname%2Cartwork&format%5Bresources%5D=map&include%5Balbums%5D=artists&include%5Bmusic-videos%5D=artists&include%5Bsongs%5D=artists&include%5Bstations%5D=radio-show&l=en-US&limit=21&omit%5Bresource%5D=autos&platform=web&relate%5Balbums%5D=artists&relate%5Bsongs%5D=albums&term=test&types=activities%2Calbums%2Capple-curators%2Cartists%2Ccurators%2Ceditorial-items%2Cmusic-movies%2Cmusic-videos%2Cplaylists%2Crecord-labels%2Csongs%2Cstations%2Ctv-episodes%2Cuploaded-videos&with=lyricHighlights%2Clyrics%2CnaturalLanguage%2CserverBubbles%2Csubtitles
+  body: none
+  auth: inherit
+}
+
+params:query {
+  art%5Bmusic-videos%3Aurl%5D: c
+  art%5Burl%5D: f
+  extend: artistUrl
+  fields%5Balbums%5D: artistName%2CartistUrl%2Cartwork%2CcontentRating%2CeditorialArtwork%2CeditorialNotes%2Cname%2CplayParams%2CreleaseDate%2Curl%2CtrackCount
+  fields%5Bartists%5D: url%2Cname%2Cartwork
+  format%5Bresources%5D: map
+  include%5Balbums%5D: artists
+  include%5Bmusic-videos%5D: artists
+  include%5Bsongs%5D: artists
+  include%5Bstations%5D: radio-show
+  l: en-US
+  limit: 21
+  omit%5Bresource%5D: autos
+  platform: web
+  relate%5Balbums%5D: artists
+  relate%5Bsongs%5D: albums
+  term: test
+  types: activities%2Calbums%2Capple-curators%2Cartists%2Ccurators%2Ceditorial-items%2Cmusic-movies%2Cmusic-videos%2Cplaylists%2Crecord-labels%2Csongs%2Cstations%2Ctv-episodes%2Cuploaded-videos
+  with: lyricHighlights%2Clyrics%2CnaturalLanguage%2CserverBubbles%2Csubtitles
+}
+
+headers {
+  Accept: */*
+  Accept-Language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+  Cache-Control: no-cache
+  DNT: 1
+  Origin: https://music.apple.com
+  Pragma: no-cache
+  Priority: u=1, i
+  Referer: https://music.apple.com/
+  ^user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

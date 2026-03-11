@@ -1,0 +1,250 @@
+meta {
+  name: next seededtest copy2
+  type: http
+  seq: 9
+}
+
+post {
+  url: https://music.youtube.com/youtubei/v1/next
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+  Origin: https://music.youtube.com
+  Referer: https://music.youtube.com/
+}
+
+body:json {
+  {
+    "enablePersistentPlaylistPanel": true,
+    "tunerSettingValue": "AUTOMIX_SETTING_NORMAL",
+    "videoId": "8CHg4sqwUbw",
+    "playlistId": "RDAMVMVianKGpW3bw",
+    "index": 144,
+    "params": "OAHyAQIIAZIEI1FQbWwweThkUUYyQUZDM0NycmloRkl1SWxyaEF6RmVRcjdz",
+    "playerParams": "8AUBigYjUVBtbDB5OGRRRjJBRkMzQ3JyaWhGSXVJbHJoQXpGZVFyN3PKBhA1Mzk2QTAxMTkzNDk4MDhF",
+    "playlistSetVideoId": "5396A0119349808E",
+    "loggingContext": {
+      "vssLoggingContext": {
+        "serializedContextData": "GhFSREFNVk1WaWFuS0dwVzNidw%3D%3D"
+      }
+    },
+    "watchEndpointMusicSupportedConfigs": {
+      "watchEndpointMusicConfig": {
+        "hasPersistentPlaylistPanel": true,
+        "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+      }
+    },
+    "isAudioOnly": true,
+    "responsiveSignals": {
+      "videoInteraction": [
+        {
+          "queueImpress": {},
+          "videoId": "VianKGpW3bw",
+          "queueIndex": 0
+        },
+        {
+          "queueImpress": {},
+          "videoId": "B6-CgdJYHZA",
+          "queueIndex": 1
+        },
+        {
+          "queueImpress": {},
+          "videoId": "TbOFIM0m2Wg",
+          "queueIndex": 2
+        },
+        {
+          "queueImpress": {},
+          "videoId": "WEfRb3FwsqA",
+          "queueIndex": 3
+        },
+        {
+          "queueImpress": {},
+          "videoId": "XReRodYA2tU",
+          "queueIndex": 4
+        },
+        {
+          "queueImpress": {},
+          "videoId": "bSwzZoLCoZ0",
+          "queueIndex": 5
+        },
+        {
+          "queueImpress": {},
+          "videoId": "KFrrmb-diHM",
+          "queueIndex": 6
+        },
+        {
+          "playbackSkip": {},
+          "videoId": "KFrrmb-diHM",
+          "queueIndex": 6
+        },
+        {
+          "queueImpress": {},
+          "videoId": "TkyFUjavMNU",
+          "queueIndex": 7
+        },
+        {
+          "queueImpress": {},
+          "videoId": "QuS8mnEqb2Q",
+          "queueIndex": 8
+        },
+        {
+          "queueImpress": {},
+          "videoId": "8CHg4sqwUbw",
+          "queueIndex": 9
+        }
+      ]
+    },
+    "queueContextParams": "CAIaEVJEQU1WTVZpYW5LR3BXM2J3INKRyr6Gk5MDKiNRUG1sMHk4ZFFGMkFGQzNDcnJpaEZJdUlscmhBekZlUXI3czILUXVTOG1uRXFiMlE6EDA5MDc5NkE3NUQxNTM5MzJCEVJEQU1WTVZpYW5LR3BXM2J3UAFaBAgAEAFiAHABeAE=",
+    "context": {
+      "client": {
+        "hl": "en",
+        "gl": "DE",
+        "remoteHost": "2003:e9:2720:5779:94d:8a45:d771:56f6",
+        "deviceMake": "",
+        "deviceModel": "",
+        "visitorData": "CgtFMTZNSC1YUGxKTSjlo7vNBjIKCgJERRIEEgAgWg%3D%3D",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36,gzip(gfe)",
+        "clientName": "WEB_REMIX",
+        "clientVersion": "1.20260304.03.00",
+        "osName": "Windows",
+        "osVersion": "10.0",
+        "originalUrl": "https://music.youtube.com/watch?v=E9wCDqtifg8&list=RDAMPLQPO_uXUPpms4dIDHhPla2LDJEqs8ucEo3Fj",
+        "platform": "DESKTOP",
+        "clientFormFactor": "UNKNOWN_FORM_FACTOR",
+        "configInfo": {
+          "appInstallData": "COWju80GEJX3zxwQlP6wBRDwzM8cEJmNsQUQ4YKAExC9tq4FEK7WzxwQmN3QHBDevM4cELyk0BwQ-_bQHBDxtNAcEMXSgBMQndCwBRCmttAcEL2KsAUQ0MKAExC72c4cEL2ZsAUQwarQHBCUttAcEMGP0BwQ2vfOHBCm69AcEIHNzhwQyPfPHBD6ztAcEMbGzxwQ6-bQHBCUg9AcELW1gBMQ28-AExDM364FEOH20BwQ3NTQHBCM6c8cELjkzhwQ_LLOHBDwnLAFEIeszhwQibDOHBCL988cEPCdzxwQ2cTQHBCZ-tAcEParsAUQns-AExDjldAcEIy1gBMQxYzQHBDcxYATKkhDQU1TTWhVcC1acS1ETWVVRXBVQ25BNzlGWmtGNUxMd0N6S19YLW5WQlFQTl93WEx0d2I3SnJia0JzaVZCSTNsQnJxZUFoMEgwAA%3D%3D",
+          "coldConfigData": "COaju80GGjJBSnA0NkNpa2h3N3ZQb0pZUkxqbk5fTFFDTC1reHpmZmxnZXU3UDZldmF0c29pUmFoUSIyQUpwNDZDanB5b3ZZQkJaMC02VUxqb3VmZjRwdDgyNEJkRkNvSXZ2bzhPd19PT25VWGc%3D",
+          "coldHashData": "CIqzu80GEhQxMTE5MjY4MTY1OTU3MjQwNjQ3Nhjlq7vNBjIyQUpwNDZDaWtodzd2UG9KWVJMam5OX0xRQ0wta3h6ZmZsZ2V1N1A2ZXZhdHNvaVJhaFE6MkFKcDQ2Q2pweW92WUJCWjAtNlVMam91ZmY0cHQ4MjRCZEZDb0l2dm84T3dfT09uVVhnQqQBQ0FNU2RnMG91TjIzQXFRWmx4LWZUNXlnbWhEQkdzUVVfaU9OR1RUMkdLZ0MyUmV3RGEwTnpnS3VCZG9UakEtMUF2WUdyZ3dWUkpteHR4LUZwQVdSbkFYaDJ3SFc0Z185MUFZeXYxLUlxQWJacEFZRDlfc0U4d09JNUFYTFNnU1N2Z2I3ZFB5Q0JxZFAweHJXalFYdUNiUlFDUDFFeGhHNm9nWT1IAQ%3D%3D",
+          "hotHashData": "CIqzu80GEhM1MjgzMTkxMzM3OTM5MTEwNjMyGOWru80GKJTk_BIonpH-EijIyv4SKLfq_hIosoD_EijhgoATKMuRgBMokJuAEyi1m4ATKM2ugBMo2LCAEyiTtIATKIy1gBMotbWAEyiwt4ATKNzFgBMox86AEyiez4ATKNvPgBMooNCAEyjF0oATMjJBSnA0NkNpa2h3N3ZQb0pZUkxqbk5fTFFDTC1reHpmZmxnZXU3UDZldmF0c29pUmFoUToyQUpwNDZDanB5b3ZZQkJaMC02VUxqb3VmZjRwdDgyNEJkRkNvSXZ2bzhPd19PT25VWGdCKENBTVNHQTBPeUpINEZmcVFCdGNuRlF6dTFja010WkhtQzlTakhRPT1IAQ%3D%3D"
+        },
+        "userInterfaceTheme": "USER_INTERFACE_THEME_DARK",
+        "timeZone": "Europe/Berlin",
+        "browserName": "Chrome",
+        "browserVersion": "145.0.0.0",
+        "acceptHeader": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "deviceExperimentId": "ChxOell4TlRJMU5EZ3dNall6TXpZNE5EWTFPQT09EOWju80GGOWju80G",
+        "rolloutToken": "CIeTus6Lt4vuUxDx3ODrmJGLAxjkrtGIu5CTAw%3D%3D",
+        "screenWidthPoints": 1920,
+        "screenHeightPoints": 993,
+        "screenPixelDensity": 1,
+        "screenDensityFloat": 1,
+        "utcOffsetMinutes": 60,
+        "musicAppInfo": {
+          "pwaInstallabilityStatus": "PWA_INSTALLABILITY_STATUS_CAN_BE_INSTALLED",
+          "webDisplayMode": "WEB_DISPLAY_MODE_BROWSER",
+          "storeDigitalGoodsApiSupportStatus": {
+            "playStoreDigitalGoodsApiSupportStatus": "DIGITAL_GOODS_API_SUPPORT_STATUS_UNSUPPORTED"
+          }
+        }
+      },
+      "user": {
+        "lockedSafetyMode": false
+      },
+      "request": {
+        "useSsl": true,
+        "consistencyTokenJars": [],
+        "internalExperimentFlags": [],
+        "innertubeTokenJar": {
+          "appTokens": [
+            {
+              "type": 2,
+              "value": "EicKI1FQbWwweThkUUYyQUZDM0NycmloRkl1SWxyaEF6RmVRcjdzEAA=",
+              "maxAgeSeconds": 86400,
+              "creationTimeUsec": "1773064995339858"
+            }
+          ]
+        }
+      },
+      "clickTracking": {
+        "clickTrackingParams": "COQLEMggIhMIk728voaTkwMVkzFzCR3w8gUKMgNCRmFIvKPB1ayc-JDwAZoBBQgMEPgdygEEy7mzCw=="
+      },
+      "adSignalsInfo": {
+        "params": [
+          {
+            "key": "dt",
+            "value": "1773064678548"
+          },
+          {
+            "key": "flash",
+            "value": "0"
+          },
+          {
+            "key": "frm",
+            "value": "0"
+          },
+          {
+            "key": "u_tz",
+            "value": "60"
+          },
+          {
+            "key": "u_his",
+            "value": "13"
+          },
+          {
+            "key": "u_h",
+            "value": "1080"
+          },
+          {
+            "key": "u_w",
+            "value": "1920"
+          },
+          {
+            "key": "u_ah",
+            "value": "1080"
+          },
+          {
+            "key": "u_aw",
+            "value": "1920"
+          },
+          {
+            "key": "u_cd",
+            "value": "32"
+          },
+          {
+            "key": "bc",
+            "value": "31"
+          },
+          {
+            "key": "bih",
+            "value": "993"
+          },
+          {
+            "key": "biw",
+            "value": "1920"
+          },
+          {
+            "key": "brdim",
+            "value": "-1920,188,-1920,188,1920,188,1920,1080,1920,993"
+          },
+          {
+            "key": "vis",
+            "value": "1"
+          },
+          {
+            "key": "wgl",
+            "value": "true"
+          },
+          {
+            "key": "ca_type",
+            "value": "image"
+          }
+        ]
+      },
+      "activePlayers": [
+        {
+          "playerContextParams": "Q0FFU0FnZ0I="
+        }
+      ]
+    }
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

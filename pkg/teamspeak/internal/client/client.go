@@ -18,6 +18,13 @@ import (
 	"Jabba_The_Bot/pkg/teamspeak/internal/protocol"
 )
 
+const (
+	levelTrace                  = slog.LevelDebug - 4
+	maxVoiceFrameBytes          = 484
+	closeDisconnectFlushDelay   = 100 * time.Millisecond
+	commandFragmentStallTimeout = 2 * time.Second
+)
+
 type Client struct {
 	conn      *net.UDPConn
 	raddr     *net.UDPAddr
@@ -32,6 +39,7 @@ type Client struct {
 	voiceID   uint16
 	aead      *protocol.AEAD
 	config    Config
+	logger    *slog.Logger
 	Session   *session.Session
 
 	cmdFragActive     bool
@@ -41,10 +49,6 @@ type Client struct {
 	cmdFragStarted    time.Time
 }
 
-const maxVoiceFrameBytes = 484
-const closeDisconnectFlushDelay = 100 * time.Millisecond
-const commandFragmentStallTimeout = 2 * time.Second
-
 type Config struct {
 	KeyPath       string
 	Nickname      string
@@ -53,6 +57,7 @@ type Config struct {
 	Platform      string
 	HWID          string
 	HashcashLevel int // TODO: Remove, see ts3protocol.md 4.1
+	Logger        *slog.Logger
 }
 
 func NewClient(conn *net.UDPConn, raddr *net.UDPAddr, config Config) *Client {
@@ -63,6 +68,7 @@ func NewClient(conn *net.UDPConn, raddr *net.UDPAddr, config Config) *Client {
 		errCh:   make(chan error, 1),
 		Session: session.NewSession(nil, 0),
 		config:  config,
+		logger:  config.Logger,
 		aead:    protocol.NewAEAD(),
 	}
 }
@@ -92,7 +98,7 @@ func (c *Client) Close() error {
 		// `clientdisconnect` can only be sent after handshake/session are established.
 		if c.ClientID() != 0 && len(c.SharedIV()) != 0 {
 			if err := c.sendClientDisconnect("Bot Stopped"); err != nil {
-				slog.Debug("failed to send clientdisconnect", "error", err)
+				c.logDebug("failed to send clientdisconnect", "error", err)
 			} else {
 				// Give UDP stack a brief chance to flush disconnect before closing socket.
 				time.Sleep(closeDisconnectFlushDelay)
@@ -326,7 +332,7 @@ func (c *Client) Listen(ctx context.Context) {
 }
 
 func (c *Client) handlePacket(pkt *protocol.S2CPacket) {
-	slog.Log(context.Background(), -8 /* LevelTrace */, "Received packet", "Type", pkt.Type.String())
+	c.logTrace("received packet", "type", pkt.Type.String())
 
 	var (
 		msg *protocol.Message
@@ -335,7 +341,7 @@ func (c *Client) handlePacket(pkt *protocol.S2CPacket) {
 	switch pkt.Type {
 	case protocol.PTInit1:
 		c.handleInit1(pkt)
-	case protocol.PTCommand:
+	case protocol.PTCommand, protocol.PTCommandLow:
 		err = c.ack(pkt)
 		if err != nil {
 			c.report(err)
@@ -343,18 +349,7 @@ func (c *Client) handlePacket(pkt *protocol.S2CPacket) {
 		}
 		msg, err = c.handleCommandPacket(pkt)
 		if err != nil {
-			slog.Debug("ignoring malformed command packet", "type", pkt.Type.String(), "flags", protocol.FlagsString(pkt.Flags), "pid", pkt.PId, "error", err)
-			return
-		}
-	case protocol.PTCommandLow:
-		err = c.ack(pkt)
-		if err != nil {
-			c.report(err)
-			return
-		}
-		msg, err = c.handleCommandPacket(pkt)
-		if err != nil {
-			slog.Debug("ignoring malformed command packet", "type", pkt.Type.String(), "flags", protocol.FlagsString(pkt.Flags), "pid", pkt.PId, "error", err)
+			c.logMalformedCommand(pkt, err)
 			return
 		}
 	case protocol.PTHeartbeat:
@@ -488,7 +483,7 @@ func (c *Client) handleCommandPacket(p *protocol.S2CPacket) (*protocol.Message, 
 	isCompressed := p.Flags&protocol.FlagCP != 0
 
 	if c.cmdFragActive && !c.cmdFragStarted.IsZero() && time.Since(c.cmdFragStarted) > commandFragmentStallTimeout {
-		slog.Debug("resetting stalled command fragment stream", "expectedPID", c.cmdFragNextPID, "receivedPID", p.PId)
+		c.logDebug("resetting stalled command fragment stream", "expected_pid", c.cmdFragNextPID, "received_pid", p.PId)
 		c.resetCommandFragmentState()
 	}
 
@@ -569,7 +564,7 @@ func (c *Client) parseAndHandleCommand(data []byte, compressed bool) (*protocol.
 		return nil, fmt.Errorf("invalid command name bytes")
 	}
 
-	slog.Debug("Received message", "Name", messageEnvelope.Name)
+	c.logDebug("received message", "name", messageEnvelope.Name)
 
 	if err := c.handleMessage(messageEnvelope); err != nil {
 		return nil, err
@@ -727,4 +722,29 @@ func (c *Client) handleInitserver(envelope *protocol.Message) error {
 	}
 
 	return nil
+}
+
+func (c *Client) logDebug(msg string, args ...any) {
+	c.log(slog.LevelDebug, msg, args...)
+}
+
+func (c *Client) logTrace(msg string, args ...any) {
+	c.log(levelTrace, msg, args...)
+}
+
+func (c *Client) log(level slog.Level, msg string, args ...any) {
+	if c == nil || c.logger == nil {
+		return
+	}
+	c.logger.Log(context.Background(), level, msg, args...)
+}
+
+func (c *Client) logMalformedCommand(pkt *protocol.S2CPacket, err error) {
+	c.logDebug(
+		"ignoring malformed command packet",
+		"type", pkt.Type.String(),
+		"flags", protocol.FlagsString(pkt.Flags),
+		"pid", pkt.PId,
+		"error", err,
+	)
 }

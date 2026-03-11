@@ -1,0 +1,61 @@
+meta {
+  name: next seededtest
+  type: http
+  seq: 8
+}
+
+post {
+  url: https://music.youtube.com/youtubei/v1/next
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+  Origin: https://music.youtube.com
+  Referer: https://music.youtube.com/
+}
+
+body:json {
+  {
+    "enablePersistentPlaylistPanel": true,
+    "context": {
+      "client": {
+        "clientName": "WEB_REMIX",
+        "clientVersion": "1.20240101.01.00",
+      }
+    },
+    "videoId": "dQw4w9WgXcQ",
+    "playlistId": "RDAMVMdQw4w9WgXcQ", 
+    "enablePersistentPlaylistPanel": true,
+    "isAudioOnly": true,
+    "responsiveSignals": {
+      "videoInteraction": [
+        {
+          "playbackSkip": {},
+          "videoId": "yPYZpwSpKmA",
+          "queueIndex": 0
+        },
+        {
+          "queueImpress": {},
+          "videoId": "8teSLYAiSa8",
+          "queueIndex": 1
+        },
+        {
+          "playbackSkip": {},
+          "videoId": "dQw4w9WgXcQ",
+          "queueIndex": 2
+        },
+  
+      ]
+    }
+  }
+  
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

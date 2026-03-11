@@ -56,7 +56,7 @@ func (h *Handlers) play(ctx *discord.CommandContext) {
 	manager, ok := ctx.DiscordBot.MusicManagers[voiceSession.GetSessionId()]
 	if !ok {
 		manager = music.NewManager(
-			*provider.NewYouTubeProvider(),
+			*provider.NewYouTubeProvider(nil),
 			output.NewDiscord(voiceSession),
 		)
 		if ctx.DiscordBot.MusicManagers == nil {

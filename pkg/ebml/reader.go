@@ -3,6 +3,7 @@ package ebml
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -132,15 +133,30 @@ type Reader struct {
 	r      *bufio.Reader
 	src    io.Reader
 	seeker io.Seeker
+	debug  *slog.Logger
 }
 
-func NewReader(r io.Reader) *Reader {
+type ReaderOption func(*Reader)
+
+func WithDebugLogger(logger *slog.Logger) ReaderOption {
+	return func(r *Reader) {
+		r.debug = logger
+	}
+}
+
+func NewReader(r io.Reader, options ...ReaderOption) *Reader {
 	reader := &Reader{
 		r:   bufio.NewReader(r),
 		src: r,
 	}
 	if s, ok := r.(io.Seeker); ok {
 		reader.seeker = s
+	}
+	for _, option := range options {
+		if option == nil {
+			continue
+		}
+		option(reader)
 	}
 	return reader
 }
@@ -155,7 +171,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 		return nil, errors.New("expected EBML header")
 	}
 
-	headerReader := NewReader(bytes.NewReader(root.Data))
+	headerReader := NewReader(bytes.NewReader(root.Data), WithDebugLogger(r.debug))
 	header := Header{}
 	for {
 		element, err := headerReader.readElement()
@@ -176,7 +192,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.Version = uint8(val)
-			slog.Debug("Version",
+			r.logDebug("Version",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", fmt.Sprintf("%d", val),
@@ -187,7 +203,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.ReadVersion = uint8(val)
-			slog.Debug("ReadVersion",
+			r.logDebug("ReadVersion",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", fmt.Sprintf("%d", val),
@@ -198,7 +214,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.MaxIDLength = uint8(val)
-			slog.Debug("MaxIDLength",
+			r.logDebug("MaxIDLength",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", fmt.Sprintf("%d", val),
@@ -209,7 +225,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.MaxSizeLength = uint(val)
-			slog.Debug("MaxSizeLength",
+			r.logDebug("MaxSizeLength",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", val,
@@ -220,7 +236,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.DocType = val
-			slog.Debug("DocType",
+			r.logDebug("DocType",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", val,
@@ -231,7 +247,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.DocTypeVersion = uint8(val)
-			slog.Debug("DocTypeVersion",
+			r.logDebug("DocTypeVersion",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", val,
@@ -242,14 +258,14 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.DocTypeReadVersion = uint8(val)
-			slog.Debug("DocTypeReadVersion",
+			r.logDebug("DocTypeReadVersion",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", val,
 			)
 		case ID_DocTypeExtension:
 			header.DocTypeExtension = &DocTypeExtension{}
-			slog.Debug("DocTypeExtension",
+			r.logDebug("DocTypeExtension",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 			)
@@ -260,7 +276,7 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.DocTypeExtension.Name = val
-			slog.Debug("DocTypeExtensionName",
+			r.logDebug("DocTypeExtensionName",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", val,
@@ -271,13 +287,13 @@ func (r *Reader) ReadHeader() (*Header, error) {
 				return nil, err
 			}
 			header.DocTypeExtension.Version = uint8(val)
-			slog.Debug("DocTypeExtensionVersion",
+			r.logDebug("DocTypeExtensionVersion",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 				"Value", val,
 			)
 		default:
-			slog.Debug("Unknown/Data Element",
+			r.logDebug("Unknown/Data Element",
 				"ID", fmt.Sprintf("0x%02x", id),
 				"Size", fmt.Sprintf("0x%02x", size),
 			)
@@ -527,7 +543,7 @@ func (r *Reader) CanSeek() bool {
 }
 
 func (r *Reader) Seek(offset int64, whence int) (int64, error) {
-	if r.seeker == nil {
+	if !r.CanSeek() {
 		return 0, fmt.Errorf("reader is not seekable")
 	}
 
@@ -538,4 +554,15 @@ func (r *Reader) Seek(offset int64, whence int) (int64, error) {
 
 	r.r = bufio.NewReader(r.src)
 	return newPos, nil
+}
+
+func (r *Reader) logDebug(msg string, args ...any) {
+	r.log(slog.LevelDebug, msg, args...)
+}
+
+func (r *Reader) log(level slog.Level, msg string, args ...any) {
+	if r == nil || r.debug == nil {
+		return
+	}
+	r.debug.Log(context.Background(), level, msg, args...)
 }
